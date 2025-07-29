@@ -10,9 +10,9 @@ public class FiscalMovementRowMapper implements RowMapper<FiscalMovement> {
     @Override
     public FiscalMovement mapRow(ResultSet rs, int rowNum) throws SQLException {
         FiscalMovement movement = new FiscalMovement();
-        movement.setMovementId(rs.getString("F2D_ID"));
+        movement.setCompanyCode(rs.getString("F2D_FILIAL"));
+        movement.setMovementId(rs.getString("F2D_IDREL"));
         movement.setTable(rs.getString("F2D_TABELA"));
-        //movement.setCompanyCode(rs.getString("COD_EMPRESA"));
         //movement.setEmissionDate(rs.getTimestamp("DATA_EMISSAO").toLocalDateTime());
         //movement.setProductCode(rs.getString("COD_PRODUTO"));
         //movement.setTotalValue(rs.getDouble("VALOR_TOTAL"));

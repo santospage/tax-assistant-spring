@@ -1,9 +1,8 @@
 package br.com.santospage.taxassistant.interfaces.dtos;
 
-import java.time.LocalDateTime;
-
 public class FiscalMovementDTO {
-    public String fd2Id;
+    public String f2dFilial;
+    public String fd2Idrel;
     public String f2dTabela;
     //public String companyCode;
     //public LocalDateTime emissionDate;

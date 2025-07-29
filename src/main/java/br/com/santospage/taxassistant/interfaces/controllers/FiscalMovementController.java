@@ -50,11 +50,11 @@ public class FiscalMovementController {
 
     private FiscalMovementDTO toDTO(FiscalMovement entity) {
         FiscalMovementDTO dto = new FiscalMovementDTO();
-        dto.fd2Id = entity.getMovementId();
+        dto.f2dFilial = entity.getCompanyCode();
+        dto.fd2Idrel = entity.getMovementId();
         dto.f2dTabela = entity.getTable();
         return dto;
     }
-
 }
 
 

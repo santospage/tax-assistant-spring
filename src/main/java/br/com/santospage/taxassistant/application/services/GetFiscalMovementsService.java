@@ -6,6 +6,7 @@ import br.com.santospage.taxassistant.domain.repositories.FiscalMovementReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class GetFiscalMovementsService implements GetFiscalMovementsUseCase {
@@ -17,7 +18,12 @@ public class GetFiscalMovementsService implements GetFiscalMovementsUseCase {
     }
 
     @Override
-    public List<FiscalMovement> execute(String tableCode) {
-        return repository.findByTable(tableCode);
+    public List<FiscalMovement> execute(String table) {
+        return repository.findByTable(table);
+    }
+
+    @Override
+    public Optional<FiscalMovement> findById(String id) {
+        return repository.findById(id);
     }
 }

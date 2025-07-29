@@ -5,8 +5,8 @@ import br.com.santospage.taxassistant.domain.repositories.FiscalMovementReposito
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class FiscalMovementRepositoryImpl implements FiscalMovementRepository {
@@ -18,9 +18,27 @@ public class FiscalMovementRepositoryImpl implements FiscalMovementRepository {
     }
 
     @Override
-    public List<FiscalMovement> findByTable(String tableCode) {
-        String sql = "SELECT F2D_ID FROM F2DT10 WHERE F2D_TABELA = ? AND D_E_L_E_T_ = ' '";
-        return jdbcTemplate.query(sql, new FiscalMovementRowMapper(), tableCode);
+    public List<FiscalMovement> findAll() {
+        String sql = "SELECT F2D_ID, F2D_TABELA FROM F2DT10 WHERE D_E_L_E_T_ = ' '";
+        return jdbcTemplate.query(sql, new FiscalMovementRowMapper());
+    }
+
+    @Override
+    public List<FiscalMovement> findByTable(String table) {
+        String sql = "SELECT F2D_ID, F2D_TABELA FROM F2DT10 WHERE F2D_TABELA = ? AND D_E_L_E_T_ = ' '";
+        return jdbcTemplate.query(sql, new FiscalMovementRowMapper(), table);
+    }
+
+    @Override
+    public Optional<FiscalMovement> findById(String id) {
+        String sql = "SELECT F2D_ID, F2D_TABELA FROM F2DT10 WHERE F2D_ID = ? AND D_E_L_E_T_ = ' '";
+        List<FiscalMovement> result = jdbcTemplate.query(sql, new FiscalMovementRowMapper(), id);
+        return result.stream().findFirst();
+    }
+
+    @Override
+    public FiscalMovement save(FiscalMovement movement) {
+        return null;
     }
 }
 

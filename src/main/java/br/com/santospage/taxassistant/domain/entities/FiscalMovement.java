@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class FiscalMovement {
     private String f2dId;
+    private String f2dtable;
     private String companyCode;
     private LocalDateTime emissionDate;
     private String productCode;
@@ -16,6 +17,14 @@ public class FiscalMovement {
 
     public void setMovementId(String f2dId) {
         this.f2dId = f2dId;
+    }
+
+    public String getTable() {
+        return f2dtable;
+    }
+
+    public void setTable(String f2DTabela) {
+        this.f2dtable = f2DTabela;
     }
 
     public String getCompanyCode() {

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class FiscalMovementDTO {
     public String fd2Id;
+    public String f2dTabela;
     //public String companyCode;
     //public LocalDateTime emissionDate;
     //public String productCode;

@@ -11,6 +11,7 @@ public class FiscalMovementRowMapper implements RowMapper<FiscalMovement> {
     public FiscalMovement mapRow(ResultSet rs, int rowNum) throws SQLException {
         FiscalMovement movement = new FiscalMovement();
         movement.setMovementId(rs.getString("F2D_ID"));
+        movement.setTable(rs.getString("F2D_TABELA"));
         //movement.setCompanyCode(rs.getString("COD_EMPRESA"));
         //movement.setEmissionDate(rs.getTimestamp("DATA_EMISSAO").toLocalDateTime());
         //movement.setProductCode(rs.getString("COD_PRODUTO"));

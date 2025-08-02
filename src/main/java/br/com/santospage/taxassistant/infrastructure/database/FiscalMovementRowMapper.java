@@ -13,10 +13,8 @@ public class FiscalMovementRowMapper implements RowMapper<FiscalMovement> {
         movement.setCompanyCode(rs.getString("F2D_FILIAL"));
         movement.setMovementId(rs.getString("F2D_IDREL"));
         movement.setTable(rs.getString("F2D_TABELA"));
-        //movement.setEmissionDate(rs.getTimestamp("DATA_EMISSAO").toLocalDateTime());
-        //movement.setProductCode(rs.getString("COD_PRODUTO"));
+        movement.setTaxCode(rs.getString("F2D_TRIB"));
         //movement.setTotalValue(rs.getDouble("VALOR_TOTAL"));
-        //movement.setCfop(rs.getString("CFOP"));
         return movement;
     }
 }

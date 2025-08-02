@@ -13,14 +13,14 @@ public class FiscalMovementRepositoryImpl implements FiscalMovementRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public FiscalMovementRepositoryImpl(JdbcTemplate jdbcTemplate) {
+    protected FiscalMovementRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public List<FiscalMovement> findAll() {
         String sql =
-                "SELECT F2D_FILIAL, F2D_IDREL, F2D_TABELA " +
+                "SELECT F2D_FILIAL, F2D_IDREL, F2D_TABELA, F2D_TRIB " +
                         "FROM F2DT10 " +
                         "WHERE D_E_L_E_T_ = ' ' " +
                         "ORDER BY F2D_FILIAL";
@@ -30,7 +30,7 @@ public class FiscalMovementRepositoryImpl implements FiscalMovementRepository {
     @Override
     public List<FiscalMovement> findByTable(String table) {
         String sql =
-                "SELECT F2D_FILIAL, F2D_IDREL, F2D_TABELA " +
+                "SELECT F2D_FILIAL, F2D_IDREL, F2D_TABELA, F2D_TRIB " +
                         "FROM F2DT10 " +
                         "WHERE F2D_TABELA = ? " +
                         "AND D_E_L_E_T_ = ' ' " +
@@ -43,7 +43,7 @@ public class FiscalMovementRepositoryImpl implements FiscalMovementRepository {
     @Override
     public Optional<FiscalMovement> findById(String id) {
         String sql =
-                "SELECT F2D_FILIAL, F2D_IDREL, F2D_TABELA " +
+                "SELECT F2D_FILIAL, F2D_IDREL, F2D_TABELA, F2D_TRIB " +
                         "FROM F2DT10 " +
                         "WHERE F2D_IDREL = ? AND D_E_L_E_T_ = ' ' " +
                         "ORDER BY F2D_FILIAL, F2D_IDREL";

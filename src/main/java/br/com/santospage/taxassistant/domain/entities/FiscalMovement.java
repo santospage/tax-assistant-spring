@@ -1,10 +1,10 @@
 package br.com.santospage.taxassistant.domain.entities;
 
 public class FiscalMovement {
-    private String f2dfilial;
-    private String f2dIdrel;
-    private String f2dtable;
-    //private String f2dtrib;
+    private String company;
+    private String idMovement;
+    private String tableMovement;
+    private String TaxCode;
     //private Double f2dbase;
     //private Double f2dbasqtd;
     //private Double f2daliq;
@@ -20,61 +20,35 @@ public class FiscalMovement {
     //private Double f2dalqmaj;
 
     public String getCompanyCode() {
-        return f2dfilial;
+        return company;
     }
 
     public void setCompanyCode(String companyCode) {
-        this.f2dfilial = companyCode;
+        this.company = companyCode;
     }
 
     public String getMovementId() {
-        return f2dIdrel;
+        return idMovement;
     }
 
     public void setMovementId(String movementId) {
-        this.f2dIdrel = movementId;
+        this.idMovement = movementId;
     }
 
     public String getTable() {
-        return f2dtable;
+        return tableMovement;
     }
 
     public void setTable(String table) {
-        this.f2dtable = table;
+        this.tableMovement = table;
     }
 
-    /*
-    public LocalDateTime getEmissionDate() {
-        return emissionDate;
+    public String getTaxCode() {
+        return TaxCode;
     }
 
-    public void setEmissionDate(LocalDateTime emissionDate) {
-        this.emissionDate = emissionDate;
+    public void setTaxCode(String taxCode) {
+        TaxCode = taxCode;
     }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
-    public Double getTotalValue() {
-        return totalValue;
-    }
-
-    public void setTotalValue(Double totalValue) {
-        this.totalValue = totalValue;
-    }
-
-    public String getCfop() {
-        return cfop;
-    }
-
-    public void setCfop(String cfop) {
-        this.cfop = cfop;
-    }
-    */
 }
 

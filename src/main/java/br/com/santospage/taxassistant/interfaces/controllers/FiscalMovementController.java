@@ -1,5 +1,6 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
+import br.com.santospage.taxassistant.application.services.GetFiscalMovementsService;
 import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
 import br.com.santospage.taxassistant.domain.repositories.FiscalMovementRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
@@ -15,7 +16,7 @@ public class FiscalMovementController {
     //private final GetFiscalMovementsUseCase useCase;
     private final FiscalMovementRepository repository;
 
-    private FiscalMovementController(FiscalMovementRepository repository) {
+    private FiscalMovementController(FiscalMovementRepository repository, GetFiscalMovementsService teste) {
         this.repository = repository;
     }
 

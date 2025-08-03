@@ -4,20 +4,16 @@ public class FiscalMovement {
     private String company;
     private String idMovement;
     private String tableMovement;
-    private String TaxCode;
-    //private Double f2dbase;
-    //private Double f2dbasqtd;
-    //private Double f2daliq;
-    //private Double f2dvalor;
-    //private Double f2daliqtr;
-    //private Double f2dmva;
-    //private Double f2dauxmva;
-    //private Double f2dpauta;
-    //private Double f2dmajora;
-    //private Double f2dauxmaj;
-    //private Double f2dtrbmaj;
-    //private Double f2dvalmaj;
-    //private Double f2dalqmaj;
+    private String taxCode;
+    private Double taxBase;
+    private Double taxQuantity;
+    private Double taxAliquot;
+    private Double taxValue;
+    private Double taxValueMargin;
+    private Double taxTariffValue;
+    private String taxTributeAumented;
+    private Double taxAliquotAumented;
+    private Double taxValueAumented;
 
     public String getCompanyCode() {
         return company;
@@ -44,11 +40,83 @@ public class FiscalMovement {
     }
 
     public String getTaxCode() {
-        return TaxCode;
+        return taxCode;
     }
 
     public void setTaxCode(String taxCode) {
-        TaxCode = taxCode;
+        this.taxCode = taxCode;
+    }
+
+    public Double getTaxBase() {
+        return taxBase;
+    }
+
+    public void setTaxBase(Double taxBase) {
+        this.taxBase = taxBase;
+    }
+
+    public Double getTaxQuantity() {
+        return taxQuantity;
+    }
+
+    public void setTaxQuantity(Double taxQuantity) {
+        this.taxQuantity = taxQuantity;
+    }
+
+    public Double getTaxAliquot() {
+        return taxAliquot;
+    }
+
+    public void setTaxAliquot(Double taxAliquot) {
+        this.taxAliquot = taxAliquot;
+    }
+
+    public Double getTaxValue() {
+        return taxValue;
+    }
+
+    public void setTaxValue(Double taxValue) {
+        this.taxValue = taxValue;
+    }
+
+    public Double getTaxValueMargin() {
+        return taxValueMargin;
+    }
+
+    public void setTaxValueMargin(Double taxValueMargin) {
+        this.taxValueMargin = taxValueMargin;
+    }
+
+    public Double getTaxTariffValue() {
+        return taxTariffValue;
+    }
+
+    public void setTaxTariffValue(Double taxTariffValue) {
+        this.taxTariffValue = taxTariffValue;
+    }
+
+    public String getTaxTributeAumented() {
+        return taxTributeAumented;
+    }
+
+    public void setTaxTributeAumented(String taxTributeAumented) {
+        this.taxTributeAumented = taxTributeAumented;
+    }
+
+    public Double getTaxAliquotAumented() {
+        return taxAliquotAumented;
+    }
+
+    public void setTaxAliquotAumented(Double taxAliquotAumented) {
+        this.taxAliquotAumented = taxAliquotAumented;
+    }
+    
+    public Double getTaxValueAumented() {
+        return taxValueAumented;
+    }
+
+    public void setTaxValueAumented(Double taxValueAumented) {
+        this.taxValueAumented = taxValueAumented;
     }
 }
 

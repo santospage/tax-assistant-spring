@@ -1,8 +1,6 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
-import br.com.santospage.taxassistant.application.services.GetFiscalMovementsService;
-import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
-import br.com.santospage.taxassistant.domain.repositories.FiscalMovementRepository;
+import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,47 +11,38 @@ import java.util.List;
 @RequestMapping("/api/fiscal-movements")
 public class FiscalMovementController {
 
-    //private final GetFiscalMovementsUseCase useCase;
-    private final FiscalMovementRepository repository;
+    private final FiscalMovementsService service;
 
-    private FiscalMovementController(FiscalMovementRepository repository, GetFiscalMovementsService teste) {
-        this.repository = repository;
-    }
-
-    // Search for tableCode (ex: /api/fiscal-movements?table=SD2) ***
-    @GetMapping(params = "table")
-    public List<FiscalMovementDTO> getByTableCode(@RequestParam("table") String table) {
-        return repository.findByTable(table)
-                .stream()
-                .map(this::toDTO)
-                .toList();
+    private FiscalMovementController(FiscalMovementsService fiscalMovementService) {
+        this.service = fiscalMovementService;
     }
 
     // Search /api/fiscal-movements/F2D123456
     @GetMapping("/{id}")
     public ResponseEntity<FiscalMovementDTO> getById(@PathVariable String id) {
-        return repository.findById(id)
-                .map(this::toDTO)
+        return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Search all (ex: /api/fiscal-movements)
-    @GetMapping
-    public List<FiscalMovementDTO> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(this::toDTO)
-                .toList();
+    // Search for tableCode (ex: /api/fiscal-movements?table=SD2) ***
+    @GetMapping(params = "table")
+    public ResponseEntity<List<FiscalMovementDTO>> getByTableCode(@RequestParam("table") String table) {
+        List<FiscalMovementDTO> results = service.findByTable(table);
+        if (results.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(results);
     }
 
-    private FiscalMovementDTO toDTO(FiscalMovement entity) {
-        FiscalMovementDTO dto = new FiscalMovementDTO();
-        dto.company = entity.getCompanyCode();
-        dto.idMovement = entity.getMovementId();
-        dto.tableMovement = entity.getTable();
-        dto.taxCode = entity.getTaxCode();
-        return dto;
+    // Search all (ex: /api/fiscal-movements)
+    @GetMapping
+    public ResponseEntity<List<FiscalMovementDTO>> getAll() {
+        List<FiscalMovementDTO> results = service.findAll();
+        if (results.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(results);
     }
 }
 

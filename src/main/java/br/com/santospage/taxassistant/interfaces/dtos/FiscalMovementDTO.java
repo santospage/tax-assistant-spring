@@ -5,8 +5,13 @@ public class FiscalMovementDTO {
     public String idMovement;
     public String tableMovement;
     public String taxCode;
-    //public LocalDateTime emissionDate;
-    //public String productCode;
-    //public Double totalValue;
-    //public String cfop;
+    public Double taxBase;
+    public Double taxQuantity;
+    public Double taxAliquot;
+    public Double taxValue;
+    public Double taxValueMargin;
+    public Double taxTariffValue;
+    public String taxTributeAumented;
+    public Double taxAliquotAumented;
+    public Double taxValueAumented;
 }

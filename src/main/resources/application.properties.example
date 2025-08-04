@@ -1,0 +1,28 @@
+spring.application.name=myproject
+
+# Perfil ativo
+spring.profiles.active=dev
+
+# Porta do servidor
+server.port=port
+
+# Configuração do banco SQL Server
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=my_database;encrypt=false;trustServerCertificate=true
+spring.datasource.username=my_username
+spring.datasource.password=my_password
+spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+# JPA/Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.SQLServerDialect
+
+# MongoDB
+#spring.data.mongodb.uri=mongodb://localhost:27017/myproject
+
+spring.security.user.name=my_safe_name
+spring.security.user.password=my_safe_pass
+
+logging.level.org.springframework=DEBUG
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type.descriptor.sql=TRACE

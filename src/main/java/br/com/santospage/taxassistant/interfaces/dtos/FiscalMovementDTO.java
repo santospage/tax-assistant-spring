@@ -1,12 +1,17 @@
 package br.com.santospage.taxassistant.interfaces.dtos;
 
 public class FiscalMovementDTO {
-    public String f2dFilial;
-    public String fd2Idrel;
-    public String f2dTabela;
-    //public String companyCode;
-    //public LocalDateTime emissionDate;
-    //public String productCode;
-    //public Double totalValue;
-    //public String cfop;
+    public String company;
+    public String idMovement;
+    public String tableMovement;
+    public String taxCode;
+    public Double taxBase;
+    public Double taxQuantity;
+    public Double taxAliquot;
+    public Double taxValue;
+    public Double taxValueMargin;
+    public Double taxTariffValue;
+    public String taxTributeAumented;
+    public Double taxAliquotAumented;
+    public Double taxValueAumented;
 }

@@ -11,6 +11,4 @@ public interface FiscalMovementRepository {
     List<FiscalMovement> findByTable(String table);
 
     List<FiscalMovement> findAll();
-
-    //FiscalMovement save(FiscalMovement movement);
 }

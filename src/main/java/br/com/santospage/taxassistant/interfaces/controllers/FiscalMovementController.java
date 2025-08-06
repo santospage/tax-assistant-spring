@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/fiscal-movements")
@@ -37,7 +38,7 @@ public class FiscalMovementController {
 
     // Search all (ex: /api/fiscal-movements)
     @GetMapping
-    public ResponseEntity<List<FiscalMovementDTO>> getAll() {
+    public ResponseEntity<List<FiscalMovementDTO>> getAll(@RequestParam Map<String, String> allParams) {
         List<FiscalMovementDTO> results = service.findAll();
         if (results.isEmpty()) {
             return ResponseEntity.noContent().build();

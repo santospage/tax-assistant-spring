@@ -1,17 +1,38 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import br.com.santospage.taxassistant.application.services.ProductService;
+import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/produtos")
-public class ProductController<ProductDTO> {
-    //private final ProdutoService service;
+@RequestMapping("/api/products")
+public class ProductController {
+    private final ProductService service;
 
-    //@GetMapping("/{id}")
-    //public ProductDTO buscar(@PathVariable String id) {
-        //return service.find(id);
-    //}
+    private ProductController(ProductService productService) {
+        this.service = productService;
+    }
+
+    // Search /api/product/LJTEST01
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getById(@PathVariable String id) {
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Search all (ex: /api/product)
+    @GetMapping
+    public ResponseEntity<List<ProductDTO>> getAll(@RequestParam Map<String, String> allParams) {
+        List<ProductDTO> results = service.findAll();
+        if (results.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(results);
+    }
+
 }

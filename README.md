@@ -1,6 +1,6 @@
 # Tax Assistant
 
-![Badge em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN)
+![Badge Developing](http://img.shields.io/static/v1?label=STATUS&message=DEVELOPING&color=GREEN)
 
 ## Project Summary
 
@@ -32,27 +32,40 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 ├── src
 │   ├── application
 │   │   ├── services
-│   │   │   └── FiscalMovementsService
+│   │   │   ├── CustomerService
+│   │   │   ├── FiscalMovementsService
+│   │   │   └── ProductService
 │   │   └── usecases
 │   ├── domain
 │   │   ├── entities
+│   │   │   ├── Customer
 │   │   │   ├── FiscalMovement
 │   │   │   └── Product
 │   │   ├── enums
 │   │   ├── exceptions
 │   │   └── repositories
+│   │       ├── CustomerRepository
 │   │       ├── FiscalMovementRepository
 │   │       └── ProductRepository
 │   ├── infrastructure
 │   │   ├── database
+│   │   │   ├── CustomerRepositoryImpl
+│   │   │   ├── CustomerRowMapper
+│   │   │   ├── FiscalMovementRepositoryImpl
+│   │   │   ├── FiscalMovementRowMapper
+│   │   │   ├── ProductRepositoryImpl
+│   │   │   └── ProductRowMapper
 │   │   ├── external
 │   │   └── ia
 │   ├── interfaces
 │   │   ├── controllers
+│   │   │   ├── CustomerController
 │   │   │   ├── FiscalMovementController
 │   │   │   └── ProductController
 │   │   └── dtos
-│   │       └── FiscalMovementDTO
+│   │   │   ├── ProductDTO
+│   │   │   ├── FiscalMovementDTO
+│   │       └── ProductDTO
 │   └── TaxAssistantApplication 
 ├── .gitignore
 ├── .gitattributes

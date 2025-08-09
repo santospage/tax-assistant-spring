@@ -1,5 +1,6 @@
 package br.com.santospage.taxassistant.application.services;
 
+import br.com.santospage.taxassistant.domain.entities.Product;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class ProductService {
                 .toList();
     }
 
-    private ProductDTO toDTO(br.com.santospage.taxassistant.domain.entities.Product entity) {
+    private ProductDTO toDTO(Product entity) {
         ProductDTO dto = new ProductDTO();
         dto.company = entity.getCompany();
         dto.id = entity.getId();

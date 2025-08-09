@@ -17,7 +17,7 @@ public class ProductController {
         this.service = productService;
     }
 
-    // Search /api/product/LJTEST01
+    // Search /api/products/LJTEST01
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getById(@PathVariable String id) {
         return service.findById(id)
@@ -25,7 +25,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Search all (ex: /api/product)
+    // Search all (ex: /api/products)
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAll(@RequestParam Map<String, String> allParams) {
         List<ProductDTO> results = service.findAll();

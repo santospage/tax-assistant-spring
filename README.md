@@ -30,47 +30,86 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 
 ```
 ├── src
-│   ├── application
-│   │   ├── services
-│   │   │   ├── CustomerService
-│   │   │   ├── FiscalMovementsService
-│   │   │   └── ProductService
-│   │   └── usecases
-│   ├── domain
-│   │   ├── entities
-│   │   │   ├── Customer
-│   │   │   ├── FiscalMovement
-│   │   │   └── Product
-│   │   ├── enums
-│   │   ├── exceptions
-│   │   └── repositories
-│   │       ├── CustomerRepository
-│   │       ├── FiscalMovementRepository
-│   │       └── ProductRepository
-│   ├── infrastructure
-│   │   ├── database
-│   │   │   ├── CustomerRepositoryImpl
-│   │   │   ├── CustomerRowMapper
-│   │   │   ├── FiscalMovementRepositoryImpl
-│   │   │   ├── FiscalMovementRowMapper
-│   │   │   ├── ProductRepositoryImpl
-│   │   │   └── ProductRowMapper
-│   │   ├── external
-│   │   └── ia
-│   ├── interfaces
-│   │   ├── controllers
-│   │   │   ├── CustomerController
-│   │   │   ├── FiscalMovementController
-│   │   │   └── ProductController
-│   │   └── dtos
-│   │   │   ├── ProductDTO
-│   │   │   ├── FiscalMovementDTO
-│   │       └── ProductDTO
-│   └── TaxAssistantApplication 
+│   ├── main
+│   │   └── java
+│   │       └── br
+│   │           └── com
+│   │               └── santospage
+│   │                   ├── application
+│   │                   │   ├── services
+│   │                   │   │   ├── CustomerService.java
+│   │                   │   │   ├── FiscalMovementsService.java
+│   │                   │   │   └── ProductService.java
+│   │                   │   └── usecases
+│   │                   ├── domain
+│   │                   │   ├── entities
+│   │                   │   │   ├── Customer.java
+│   │                   │   │   ├── FiscalMovement.java
+│   │                   │   │   └── Product.java
+│   │                   │   ├── enums
+│   │                   │   ├── exceptions
+│   │                   │   └── repositories
+│   │                   │       ├── CustomerRepository.java
+│   │                   │       ├── FiscalMovementRepository.java
+│   │                   │       └── ProductRepository.java
+│   │                   ├── infrastructure
+│   │                   │   ├── database
+│   │                   │   │   ├── CustomerRepositoryImpl.java
+│   │                   │   │   ├── CustomerRowMapper.java
+│   │                   │   │   ├── FiscalMovementRepositoryImpl.java
+│   │                   │   │   ├── FiscalMovementRowMapper.java
+│   │                   │   │   ├── ProductRepositoryImpl.java
+│   │                   │   │   └── ProductRowMapper.java
+│   │                   │   ├── external
+│   │                   │   └── ia
+│   │                   ├── interfaces
+│   │                   │   ├── controllers
+│   │                   │   │   ├── CustomerController.java
+│   │                   │   │   ├── FiscalMovementController.java
+│   │                   │   │   └── ProductController.java
+│   │                   │   └── dtos
+│   │                   │       ├── CustomerDTO.java
+│   │                   │       ├── FiscalMovementDTO.java
+│   │                   │       └── ProductDTO.java
+│   │                   └── TaxAssistantApplication.java
+│   └── test
+│       └── java
+│           └── br
+│               └── com
+│                   └── santospage
+│                       ├── application
+│                       │   ├── services
+│                       │   │   ├── CustomerServiceTest.java
+│                       │   │   ├── FiscalMovementsServiceTest.java
+│                       │   │   └── ProductServiceTest.java
+│                       │   └── usecases
+│                       ├── domain
+│                       │   ├── entities
+│                       │   ├── enums
+│                       │   ├── exceptions
+│                       │   └── repositories
+│                       ├── infrastructure
+│                       │   ├── database
+│                       │   │   ├── CustomerRepositoryImplTest.java
+│                       │   │   ├── CustomerRowMapperTest.java
+│                       │   │   ├── FiscalMovementRepositoryImplTest.java
+│                       │   │   ├── FiscalMovementRowMapperTest.java
+│                       │   │   ├── ProductRepositoryImplTest.java
+│                       │   │   └── ProductRowMapperTest.java
+│                       │   ├── external
+│                       │   └── ia
+│                       ├── interfaces
+│                       │   ├── controllers
+│                       │   │   ├── CustomerControllerTest.java
+│                       │   │   ├── FiscalMovementControllerTest.java
+│                       │   │   └── ProductControllerTest.java
+│                       │   └── dtos
+│                       └── TaxAssistantApplicationTest.java
 ├── .gitignore
 ├── .gitattributes
 ├── pom.xml
 └── README.md
+
 ```
 
 ### Project Installation
@@ -83,10 +122,18 @@ Follow the steps below to set up the project on your local machine.
 
 The API exposes the following endpoints under the base URL http://localhost:8080/api:
 
+`/customers`
+
+- `GET /id`
+
 `/fiscal-movements`
 
 - `GET /idMovement`
 - `GET /tableCode`
+
+`/products`
+
+- `GET /id`
 
 ### DataBase
 

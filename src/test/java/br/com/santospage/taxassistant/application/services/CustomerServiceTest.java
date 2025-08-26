@@ -1,6 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.entities.Customer;
+import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
 import br.com.santospage.taxassistant.domain.repositories.CustomerRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.CustomerDTO;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,12 +34,12 @@ class CustomerServiceTest {
         when(repository.findById("000001")).thenReturn(Optional.of(entity));
 
         // When
-        Optional<CustomerDTO> result = customerService.findById("000001");
+        CustomerDTO result = customerService.findById("000001");
 
         // Then
-        assertTrue(result.isPresent());
-        assertEquals("CUSTOMER 001", result.get().name);
-        assertEquals("000001", result.get().id);
+        assertNotNull(result);
+        assertEquals("CUSTOMER 001", result.name);
+        assertEquals("000001", result.id);
         verify(repository).findById("000001");
     }
 
@@ -48,11 +48,13 @@ class CustomerServiceTest {
         // Given
         when(repository.findById("000099")).thenReturn(Optional.empty());
 
-        // When
-        Optional<CustomerDTO> result = customerService.findById("000099");
+        // When / Then
+        assertThrows(
+                CustomerNotFoundException.class, () -> {
+                    customerService.findById("000099");
+                }
+        );
 
-        // Then
-        assertTrue(result.isEmpty());
         verify(repository).findById("000099");
     }
 

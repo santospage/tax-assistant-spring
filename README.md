@@ -12,7 +12,9 @@ parameter configurations.
 ## Tech Stack Used
 
 - `Java` v23.0.2
-- `Spring Boot` v3.5.0,
+- `Spring Boot` v3.5.0
+- `SQL Server` v2019 ou superior
+
 - `spring-boot-starter-actuator`
 - `spring-boot-starter-data-jpa`
 - `spring-boot-starter-data-mongodb`
@@ -22,7 +24,16 @@ parameter configurations.
 - `spring-boot-starter-web-services`
 - `mssql-jdbc`
 - `lombok`
-- `SQL Server` v2019 or later
+
+- `spring-test` v6.2.7
+- `mockito-core` v5.17.0
+- `junit-jupiter-api` v5.12.2
+- `mockito-junit-jupiter` v5.17.0
+- `spring-jdbc` v6.2.7
+- `spring-boot-test` v3.5.0
+- `spring-web` v6.2.7
+- `spring-boot-autoconfigure` v3.5.0
+- `spring-context` v6.2.7
 
 ## Installation
 
@@ -30,81 +41,83 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 
 ```
 ├── src
-│   ├── main
-│   │   └── java
-│   │       └── br
-│   │           └── com
-│   │               └── santospage
-│   │                   ├── application
-│   │                   │   ├── services
-│   │                   │   │   ├── CustomerService.java
-│   │                   │   │   ├── FiscalMovementsService.java
-│   │                   │   │   └── ProductService.java
-│   │                   │   └── usecases
-│   │                   ├── domain
-│   │                   │   ├── entities
-│   │                   │   │   ├── Customer.java
-│   │                   │   │   ├── FiscalMovement.java
-│   │                   │   │   └── Product.java
-│   │                   │   ├── enums
-│   │                   │   ├── exceptions
-│   │                   │   └── repositories
-│   │                   │       ├── CustomerRepository.java
-│   │                   │       ├── FiscalMovementRepository.java
-│   │                   │       └── ProductRepository.java
-│   │                   ├── infrastructure
-│   │                   │   ├── database
-│   │                   │   │   ├── CustomerRepositoryImpl.java
-│   │                   │   │   ├── CustomerRowMapper.java
-│   │                   │   │   ├── FiscalMovementRepositoryImpl.java
-│   │                   │   │   ├── FiscalMovementRowMapper.java
-│   │                   │   │   ├── ProductRepositoryImpl.java
-│   │                   │   │   └── ProductRowMapper.java
-│   │                   │   ├── external
-│   │                   │   └── ia
-│   │                   ├── interfaces
-│   │                   │   ├── controllers
-│   │                   │   │   ├── CustomerController.java
-│   │                   │   │   ├── FiscalMovementController.java
-│   │                   │   │   └── ProductController.java
-│   │                   │   └── dtos
-│   │                   │       ├── CustomerDTO.java
-│   │                   │       ├── FiscalMovementDTO.java
-│   │                   │       └── ProductDTO.java
-│   │                   └── TaxAssistantApplication.java
-│   └── test
-│       └── java
-│           └── br
-│               └── com
-│                   └── santospage
-│                       ├── application
-│                       │   ├── services
-│                       │   │   ├── CustomerServiceTest.java
-│                       │   │   ├── FiscalMovementsServiceTest.java
-│                       │   │   └── ProductServiceTest.java
-│                       │   └── usecases
-│                       ├── domain
-│                       │   ├── entities
-│                       │   ├── enums
-│                       │   ├── exceptions
-│                       │   └── repositories
-│                       ├── infrastructure
-│                       │   ├── database
-│                       │   │   ├── CustomerRepositoryImplTest.java
-│                       │   │   ├── CustomerRowMapperTest.java
-│                       │   │   ├── FiscalMovementRepositoryImplTest.java
-│                       │   │   ├── FiscalMovementRowMapperTest.java
-│                       │   │   ├── ProductRepositoryImplTest.java
-│                       │   │   └── ProductRowMapperTest.java
-│                       │   ├── external
-│                       │   └── ia
-│                       ├── interfaces
-│                       │   ├── controllers
-│                       │   │   ├── CustomerControllerTest.java
-│                       │   │   ├── FiscalMovementControllerTest.java
-│                       │   │   └── ProductControllerTest.java
-│                       │   └── dtos
-│                       └── TaxAssistantApplicationTest.java
+│   ├── main
+│   │   └── java
+│   │       └── br
+│   │           └── com
+│   │               └── santospage
+│   │                   └── taxassistant
+│   │                       ├── application
+│   │                       │   ├── services
+│   │                       │   │   ├── CustomerService.java
+│   │                       │   │   ├── FiscalMovementsService.java
+│   │                       │   │   └── ProductService.java
+│   │                       │   └── usecases
+│   │                       ├── domain
+│   │                       │   ├── entities
+│   │                       │   │   ├── Customer.java
+│   │                       │   │   ├── FiscalMovement.java
+│   │                       │   │   └── Product.java
+│   │                       │   ├── enums
+│   │                       │   ├── exceptions
+│   │                       │   └── repositories
+│   │                       │       ├── CustomerRepository.java
+│   │                       │       ├── FiscalMovementRepository.java
+│   │                       │       └── ProductRepository.java
+│   │                       ├── infrastructure
+│   │                       │   ├── database
+│   │                       │   │   ├── CustomerRepositoryImpl.java
+│   │                       │   │   ├── CustomerRowMapper.java
+│   │                       │   │   ├── FiscalMovementRepositoryImpl.java
+│   │                       │   │   ├── FiscalMovementRowMapper.java
+│   │                       │   │   ├── ProductRepositoryImpl.java
+│   │                       │   │   └── ProductRowMapper.java
+│   │                       │   ├── external
+│   │                       │   └── ia
+│   │                       ├── interfaces
+│   │                       │   ├── controllers
+│   │                       │   │   ├── CustomerController.java
+│   │                       │   │   ├── FiscalMovementController.java
+│   │                       │   │   └── ProductController.java
+│   │                       │   └── dtos
+│   │                       │       ├── CustomerDTO.java
+│   │                       │       ├── FiscalMovementDTO.java
+│   │                       │       └── ProductDTO.java
+│   │                       └── TaxAssistantApplication.java
+├── test
+│   └── java
+│       └── br
+│           └── com
+│               └── santospage
+│                   └── taxassistant
+│                       ├── application
+│                       │   ├── services
+│                       │   │   ├── CustomerServiceTest.java
+│                       │   │   ├── FiscalMovementsServiceTest.java
+│                       │   │   └── ProductServiceTest.java
+│                       │   └── usecases
+│                       ├── domain
+│                       │   ├── entities
+│                       │   ├── enums
+│                       │   ├── exceptions
+│                       │   └── repositories
+│                       ├── infrastructure
+│                       │   ├── database
+│                       │   │   ├── CustomerRepositoryImplTest.java
+│                       │   │   ├── CustomerRowMapperTest.java
+│                       │   │   ├── FiscalMovementRepositoryImplTest.java
+│                       │   │   ├── FiscalMovementRowMapperTest.java
+│                       │   │   ├── ProductRepositoryImplTest.java
+│                       │   │   └── ProductRowMapperTest.java
+│                       │   ├── external
+│                       │   └── ia
+│                       ├── interfaces
+│                       │   ├── controllers
+│                       │   │   ├── CustomerControllerTest.java
+│                       │   │   ├── FiscalMovementControllerTest.java
+│                       │   │   └── ProductControllerTest.java
+│                       │   └── dtos
+│                       └── TaxAssistantApplicationTest.java
 ├── .gitignore
 ├── .gitattributes
 ├── pom.xml

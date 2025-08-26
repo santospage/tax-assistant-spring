@@ -14,16 +14,15 @@ public class CustomerController {
 
     private final CustomerService service;
 
-    private CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService) {
         this.service = customerService;
     }
 
     // Search /api/customers/000001
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDTO> getById(@PathVariable String id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        CustomerDTO customer = service.findById(id);
+        return ResponseEntity.ok(customer);
     }
 
     // Search all (ex: /api/customers)
@@ -31,9 +30,8 @@ public class CustomerController {
     public ResponseEntity<List<CustomerDTO>> getAll(@RequestParam Map<String, String> allParams) {
         List<CustomerDTO> results = service.findAll();
         if (results.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build(); // 204 No Content
         }
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok(results); // 200 OK
     }
-
 }

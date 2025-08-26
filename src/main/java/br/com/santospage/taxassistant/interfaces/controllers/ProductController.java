@@ -13,16 +13,15 @@ import java.util.Map;
 public class ProductController {
     private final ProductService service;
 
-    private ProductController(ProductService productService) {
+    ProductController(ProductService productService) {
         this.service = productService;
     }
 
     // Search /api/products/LJTEST01
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getById(@PathVariable String id) {
-        return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        ProductDTO product = service.findById(id);
+        return ResponseEntity.ok(product);
     }
 
     // Search all (ex: /api/products)
@@ -30,9 +29,8 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getAll(@RequestParam Map<String, String> allParams) {
         List<ProductDTO> results = service.findAll();
         if (results.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build(); // 204 No Content
         }
-        return ResponseEntity.ok(results);
+        return ResponseEntity.ok(results); // 200 OK
     }
-
 }

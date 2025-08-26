@@ -1,12 +1,12 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.entities.Customer;
+import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
 import br.com.santospage.taxassistant.domain.repositories.CustomerRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.CustomerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -17,14 +17,20 @@ public class CustomerService {
         this.repository = repository;
     }
 
-    public Optional<CustomerDTO> findById(String id) {
-        return repository.findById(id)
-                .map(this::toDTO);
+    // Search customer by ID
+    public CustomerDTO findById(String id) {
+        Customer customer = repository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
+        return toDTO(customer);
     }
 
+    // Search all customers
     public List<CustomerDTO> findAll() {
-        return repository.findAll()
-                .stream()
+        List<Customer> customers = repository.findAll();
+        if (customers.isEmpty()) {
+            throw new CustomerNotFoundException("No customers found");
+        }
+        return customers.stream()
                 .map(this::toDTO)
                 .toList();
     }

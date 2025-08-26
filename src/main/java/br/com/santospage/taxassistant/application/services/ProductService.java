@@ -1,12 +1,12 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.entities.Product;
+import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -17,14 +17,20 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public Optional<ProductDTO> findById(String id) {
-        return repository.findById(id)
-                .map(this::toDTO);
+    // Search product by ID
+    public ProductDTO findById(String id) {
+        Product product = repository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Customer not found with id: " + id));
+        return toDTO(product);
     }
 
+    // Search all products
     public List<ProductDTO> findAll() {
-        return repository.findAll()
-                .stream()
+        List<Product> product = repository.findAll();
+        if (product.isEmpty()) {
+            throw new ProductNotFoundException("No product found");
+        }
+        return product.stream()
                 .map(this::toDTO)
                 .toList();
     }

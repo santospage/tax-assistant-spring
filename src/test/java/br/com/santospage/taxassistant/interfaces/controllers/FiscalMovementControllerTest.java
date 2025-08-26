@@ -1,6 +1,8 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
+import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
+import br.com.santospage.taxassistant.domain.exceptions.GlobalExceptionHandler;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,14 +10,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,78 +30,81 @@ public class FiscalMovementControllerTest {
     private FiscalMovementsService service;
 
     @InjectMocks
-    private FiscalMovementController controller;
-
-    private FiscalMovementDTO dto;
+    private FiscalMovementDTO fiscalDTO;
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        service = mock(FiscalMovementsService.class);
+        mockMvc = MockMvcBuilders
+                .standaloneSetup(new FiscalMovementController(service))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
 
-        dto = new FiscalMovementDTO();
-        dto.idMovement = "F2D123456";
-        dto.taxCode = "ICMS";
+        fiscalDTO = new FiscalMovementDTO();
+        fiscalDTO.idMovement = "001";
+        fiscalDTO.tableMovement = "TAB01";
     }
 
     @Test
     void testGetByIdFound() throws Exception {
-        when(service.findById("F2D123456")).thenReturn(Optional.of(dto));
+        when(service.findById("001")).thenReturn(fiscalDTO);
 
-        mockMvc.perform(get("/api/fiscal-movements/F2D123456")
-                                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fiscal-movements/001")
+                                .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.idMovement").value("F2D123456"))
-                .andExpect(jsonPath("$.taxCode").value("ICMS"));
+                .andExpect(jsonPath("$.idMovement").value("001"))
+                .andExpect(jsonPath("$.tableMovement").value("TAB01"));
     }
 
     @Test
     void testGetByIdNotFound() throws Exception {
-        when(service.findById("NOTFOUND")).thenReturn(Optional.empty());
+        when(service.findById("NOTFOUND"))
+                .thenThrow(new FiscalMovementNotFoundException("FiscalMovement not found with id: NOTFOUND"));
 
         mockMvc.perform(get("/api/fiscal-movements/NOTFOUND")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                                .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("FiscalMovement not found with id: NOTFOUND"));
     }
 
     @Test
     void testGetByTableCodeFound() throws Exception {
-        when(service.findByTable(eq("SD2"))).thenReturn(List.of(dto));
+        when(service.findByTable("TAB01")).thenReturn(List.of(fiscalDTO));
 
-        mockMvc.perform(get("/api/fiscal-movements")
-                                .param("table", "SD2")
-                                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/fiscal-movements/table/TAB01")
+                                .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].idMovement").value("F2D123456"))
-                .andExpect(jsonPath("$[0].taxCode").value("ICMS"));
+                .andExpect(jsonPath("$[0].idMovement").value("001"));
     }
 
     @Test
     void testGetByTableCodeNotFound() throws Exception {
-        when(service.findByTable(eq("EMPTY"))).thenReturn(List.of());
+        when(service.findByTable("INVALID"))
+                .thenThrow(new FiscalMovementNotFoundException("No FiscalMovements found for table: INVALID"));
 
-        mockMvc.perform(get("/api/fiscal-movements")
-                                .param("table", "EMPTY")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/fiscal-movements/table/INVALID")
+                                .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("No FiscalMovements found for table: INVALID"));
     }
 
     @Test
-    void testGetAllWithResults() throws Exception {
-        when(service.findAll()).thenReturn(List.of(dto));
+    void testGetAllFound() throws Exception {
+        when(service.findAll()).thenReturn(List.of(fiscalDTO));
 
         mockMvc.perform(get("/api/fiscal-movements")
-                                .accept(MediaType.APPLICATION_JSON))
+                                .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].idMovement").value("F2D123456"))
-                .andExpect(jsonPath("$[0].taxCode").value("ICMS"));
+                .andExpect(jsonPath("$[0].idMovement").value("001"));
     }
 
     @Test
     void testGetAllNoContent() throws Exception {
-        when(service.findAll()).thenReturn(List.of());
+        when(service.findAll()).thenThrow(new FiscalMovementNotFoundException("No FiscalMovements found"));
 
         mockMvc.perform(get("/api/fiscal-movements")
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
+                                .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("No FiscalMovements found"));
     }
 }

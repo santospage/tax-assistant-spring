@@ -1,6 +1,7 @@
 package br.com.santospage.taxassistant.infrastructure.database;
 
 import br.com.santospage.taxassistant.domain.entities.Customer;
+import br.com.santospage.taxassistant.domain.enums.CustomerType;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -16,7 +17,7 @@ public class CustomerRowMapper implements RowMapper<Customer> {
         customer.setName(rs.getString("A1_NOME"));
         customer.setNatureCustomer(rs.getString("A1_NATUREZ"));
         customer.setAddress(rs.getString("A1_END"));
-        customer.setTypeCustomer(rs.getString("A1_TIPO"));
+        customer.setTypeCustomer(String.valueOf(CustomerType.valueOf(rs.getString("A1_TIPO"))));
         customer.setUfCustomer(rs.getString("A1_EST"));
         customer.setMunicipalCode(rs.getString("A1_COD_MUN"));
         customer.setCityCustomer(rs.getString("A1_MUN"));

@@ -118,9 +118,15 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                       │   │   └── ProductControllerTest.java
 │                       │   └── dtos
 │                       └── TaxAssistantApplicationTest.java
+├── assets
+│   ├── home.png
+│   ├── customers.png
+│   ├── movemets.png
+│   └── products.png
 ├── .gitignore
 ├── .gitattributes
 ├── pom.xml
+├── README.md
 └── README.md
 
 ```
@@ -135,18 +141,37 @@ Follow the steps below to set up the project on your local machine.
 
 The API exposes the following endpoints under the base URL http://localhost:8080/api:
 
+### API Documentation (Swagger)
+
+![Home](assets/home.png)
+
 `/customers`
 
-- `GET /id`
+- `GET /api/customers`
+- `GET /api/customers/{id}`
+
+### API Documentation (Swagger)
+
+![Home](assets/customers.png)
 
 `/fiscal-movements`
 
-- `GET /idMovement`
-- `GET /tableCode`
+- `GET /api/fiscal-movements`
+- `GET /api/fiscal-movements/{id}`
+- `GET /api/fiscal-movements/table/{table}`
+
+### API Documentation (Swagger)
+
+![Home](assets/movemets.png)
 
 `/products`
 
-- `GET /id`
+- `GET /api/products`
+- `GET /api/products/{id}`
+
+### API Documentation (Swagger)
+
+![Home](assets/products.png)
 
 ### DataBase
 

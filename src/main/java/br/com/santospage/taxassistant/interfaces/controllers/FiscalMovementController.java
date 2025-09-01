@@ -2,6 +2,10 @@ package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/fiscal-movements")
+@Tag(name = "fiscal-movements", description = "Endpoints for managing fiscal-movements")
 public class FiscalMovementController {
 
     private final FiscalMovementsService service;
@@ -22,13 +27,25 @@ public class FiscalMovementController {
 
     // Search /api/fiscal-movements/F2D123456
     @GetMapping("/{id}")
+    @Operation(summary = "Search for a fiscal movement by ID",
+            description = "Returns details of a specific fiscal movement by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fiscal movement successfully found"),
+            @ApiResponse(responseCode = "404", description = "Fiscal movement not found")
+    })
     public ResponseEntity<FiscalMovementDTO> getById(@PathVariable String id) {
         FiscalMovementDTO fm = service.findById(id);
         return ResponseEntity.ok(fm);
     }
 
-    // Search for tableCode (ex: /api/fiscal-movements?table=SD2) ***
+    // Search for tableCode (ex: /api/fiscal-movements?table=SD2)
     @GetMapping("/table/{table}")
+    @Operation(summary = "Search for a fiscal movement by Table",
+            description = "Returns details of a specific fiscal movement by its Table")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fiscal movement successfully found"),
+            @ApiResponse(responseCode = "404", description = "Fiscal movement not found")
+    })
     public ResponseEntity<List<FiscalMovementDTO>> getByTable(@PathVariable String table) {
         List<FiscalMovementDTO> results = service.findByTable(table);
         return ResponseEntity.ok(results);
@@ -36,12 +53,18 @@ public class FiscalMovementController {
 
     // Search all (ex: /api/fiscal-movements)
     @GetMapping
+    @Operation(summary = "Search all fiscal movements",
+            description = "Returns details all fiscal movements")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Fiscal movement successfully found"),
+            @ApiResponse(responseCode = "404", description = "Fiscal movement not found")
+    })
     public ResponseEntity<List<FiscalMovementDTO>> getAll() {
         List<FiscalMovementDTO> results = service.findAll();
         if (results.isEmpty()) {
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(results); // 200 OK
+        return ResponseEntity.ok(results);
     }
 }
 

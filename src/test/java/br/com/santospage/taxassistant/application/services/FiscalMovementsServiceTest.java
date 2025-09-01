@@ -1,6 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
+import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.repositories.FiscalMovementRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,12 +33,12 @@ class FiscalMovementsServiceTest {
         when(repository.findById("001")).thenReturn(Optional.of(entity));
 
         // When
-        Optional<FiscalMovementDTO> result = service.findById("001");
+        FiscalMovementDTO result = service.findById("001");
 
         // Then
-        assertTrue(result.isPresent());
-        assertEquals("001", result.get().idMovement);
-        assertEquals("TAB01", result.get().tableMovement);
+        assertNotNull(result);
+        assertEquals("001", result.idMovement);
+        assertEquals("TAB01", result.tableMovement);
         verify(repository).findById("001");
     }
 
@@ -47,11 +47,13 @@ class FiscalMovementsServiceTest {
         // Given
         when(repository.findById("099")).thenReturn(Optional.empty());
 
-        // When
-        Optional<FiscalMovementDTO> result = service.findById("099");
+        // When / Then
+        assertThrows(
+                FiscalMovementNotFoundException.class, () -> {
+                    service.findById("099");
+                }
+        );
 
-        // Then
-        assertTrue(result.isEmpty());
         verify(repository).findById("099");
     }
 

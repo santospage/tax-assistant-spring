@@ -1,12 +1,12 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
+import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.repositories.FiscalMovementRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FiscalMovementsService {
@@ -17,23 +17,36 @@ public class FiscalMovementsService {
         this.repository = repository;
     }
 
-    public Optional<FiscalMovementDTO> findById(String id) {
+    public FiscalMovementDTO findById(String id) {
         return repository.findById(id)
-                .map(this::toDTO);
+                .map(this::toDTO)
+                .orElseThrow(() -> new FiscalMovementNotFoundException("FiscalMovement not found with id: " + id));
     }
 
     public List<FiscalMovementDTO> findByTable(String table) {
-        return repository.findByTable(table)
-                .stream()
+        List<FiscalMovement> entities = repository.findByTable(table);
+
+        if (entities.isEmpty()) {
+            throw new FiscalMovementNotFoundException(
+                    "No FiscalMovements found for table: " + table
+            );
+        }
+
+        return entities.stream()
                 .map(this::toDTO)
                 .toList();
     }
-
+    
     public List<FiscalMovementDTO> findAll() {
-        return repository.findAll()
+        List<FiscalMovementDTO> results = repository.findAll()
                 .stream()
                 .map(this::toDTO)
                 .toList();
+
+        if (results.isEmpty()) {
+            throw new FiscalMovementNotFoundException("No FiscalMovements found");
+        }
+        return results;
     }
 
     private FiscalMovementDTO toDTO(FiscalMovement entity) {

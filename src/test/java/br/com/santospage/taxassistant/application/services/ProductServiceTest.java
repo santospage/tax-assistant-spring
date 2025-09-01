@@ -1,21 +1,24 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.entities.Product;
+import br.com.santospage.taxassistant.domain.exceptions.GlobalExceptionHandler;
+import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
+import br.com.santospage.taxassistant.interfaces.controllers.CustomerController;
 import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -26,6 +29,15 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
+    @BeforeEach
+    void setUp() {
+        CustomerService customerService = mock(CustomerService.class);
+        Object mockMvc = MockMvcBuilders
+                .standaloneSetup(new CustomerController(customerService))
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+    }
+
     @Test
     void shouldReturnProductDtoWhenExists() {
         // Given
@@ -33,12 +45,12 @@ class ProductServiceTest {
         when(repository.findById("000001")).thenReturn(Optional.of(entity));
 
         // When
-        Optional<ProductDTO> result = productService.findById("000001");
+        ProductDTO result = productService.findById("000001");
 
         // Then
-        assertTrue(result.isPresent());
-        assertEquals("Notebook", result.get().name);
-        assertEquals("000001", result.get().id);
+        assertNotNull(result);
+        assertEquals("Notebook", result.name);
+        assertEquals("000001", result.id);
         verify(repository).findById("000001");
     }
 
@@ -47,11 +59,13 @@ class ProductServiceTest {
         // Given
         when(repository.findById("000099")).thenReturn(Optional.empty());
 
-        // When
-        Optional<ProductDTO> result = productService.findById("000099");
+        // When / Then
+        assertThrows(
+                ProductNotFoundException.class, () -> {
+                    productService.findById("000099");
+                }
+        );
 
-        // Then
-        assertTrue(result.isEmpty());
         verify(repository).findById("000099");
     }
 

@@ -1,7 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.entities.Product;
 import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
+import br.com.santospage.taxassistant.domain.models.Product;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
 import org.springframework.stereotype.Service;

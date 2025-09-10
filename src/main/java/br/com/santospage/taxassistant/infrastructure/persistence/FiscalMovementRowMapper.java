@@ -1,6 +1,6 @@
-package br.com.santospage.taxassistant.infrastructure.database;
+package br.com.santospage.taxassistant.infrastructure.persistence;
 
-import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
+import br.com.santospage.taxassistant.domain.models.FiscalMovement;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

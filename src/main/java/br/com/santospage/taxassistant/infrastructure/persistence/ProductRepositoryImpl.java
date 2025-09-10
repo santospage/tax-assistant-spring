@@ -1,6 +1,6 @@
-package br.com.santospage.taxassistant.infrastructure.database;
+package br.com.santospage.taxassistant.infrastructure.persistence;
 
-import br.com.santospage.taxassistant.domain.entities.Product;
+import br.com.santospage.taxassistant.domain.models.Product;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

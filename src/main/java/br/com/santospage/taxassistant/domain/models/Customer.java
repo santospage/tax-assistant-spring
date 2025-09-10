@@ -1,22 +1,50 @@
-package br.com.santospage.taxassistant.domain.entities;
+package br.com.santospage.taxassistant.domain.models;
 
+import br.com.santospage.taxassistant.domain.enums.CustomerType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.SQLRestriction;
+
+@Entity
+@Table(name = "SA1T10")
+@SQLRestriction("TRIM(D_E_L_E_T_) = ' '")
 public class Customer {
-    private String company;
-    private String id;
-    private String name;
-    private String natureCustomer;
-    private String address;
-    private String typeCustomer;
-    private String ufCustomer;
-    private String municipalCode;
-    private String cityCustomer;
-    private String neighborhoodCustomer;
-    private String countryCustomer;
-    private String zipCodeCustomer;
-    private String phoneCustomer;
-    private String cnpjCustomer;
-    private String stateRegistry;
 
+    @Column(name = "A1_FILIAL")
+    private String company;
+    @Id
+    @Column(name = "A1_COD")
+    private String id;
+    @Column(name = "A1_NOME")
+    private String name;
+    @Column(name = "A1_NATUREZ")
+    private String natureCustomer;
+    @Column(name = "A1_END")
+    private String address;
+    @Column(name = "A1_TIPO")
+    private String typeCustomer;
+    @Column(name = "A1_EST")
+    private String ufCustomer;
+    @Column(name = "A1_COD_MUN")
+    private String municipalCode;
+    @Column(name = "A1_MUN")
+    private String cityCustomer;
+    @Column(name = "A1_BAIRRO")
+    private String neighborhoodCustomer;
+    @Column(name = "A1_CEP")
+    private String zipCodeCustomer;
+    @Column(name = "A1_PAIS")
+    private String countryCustomer;
+    @Column(name = "A1_TEL")
+    private String phoneCustomer;
+    @Column(name = "A1_CGC")
+    private String nationalRegistryCustomer;
+    @Column(name = "A1_INSCR")
+    private String stateRegistrationCustomer;
+
+    // Getters and Setters
     public String getCompany() {
         return company;
     }
@@ -57,8 +85,8 @@ public class Customer {
         this.address = address;
     }
 
-    public String getTypeCustomer() {
-        return typeCustomer;
+    public CustomerType getTypeCustomer() {
+        return CustomerType.valueOf(typeCustomer);
     }
 
     public void setTypeCustomer(String typeCustomer) {
@@ -97,20 +125,20 @@ public class Customer {
         this.neighborhoodCustomer = neighborhoodCustomer;
     }
 
-    public String getCountryCustomer() {
-        return countryCustomer;
-    }
-
-    public void setCountryCustomer(String countryCustomer) {
-        this.countryCustomer = countryCustomer;
-    }
-
     public String getZipCodeCustomer() {
         return zipCodeCustomer;
     }
 
     public void setZipCodeCustomer(String zipCodeCustomer) {
         this.zipCodeCustomer = zipCodeCustomer;
+    }
+
+    public String getCountryCustomer() {
+        return countryCustomer;
+    }
+
+    public void setCountryCustomer(String countryCustomer) {
+        this.countryCustomer = countryCustomer;
     }
 
     public String getPhoneCustomer() {
@@ -121,19 +149,19 @@ public class Customer {
         this.phoneCustomer = phoneCustomer;
     }
 
-    public String getCnpjCustomer() {
-        return cnpjCustomer;
+    public String getNationalRegistryCustomer() {
+        return nationalRegistryCustomer;
     }
 
-    public void setCnpjCustomer(String cnpjCustomer) {
-        this.cnpjCustomer = cnpjCustomer;
+    public void setNationalRegistryCustomer(String nationalRegistryCustomer) {
+        this.nationalRegistryCustomer = nationalRegistryCustomer;
     }
 
-    public String getStateRegistry() {
-        return stateRegistry;
+    public String getStateRegistrationCustomer() {
+        return stateRegistrationCustomer;
     }
 
-    public void setStateRegistry(String stateRegistry) {
-        this.stateRegistry = stateRegistry;
+    public void setStateRegistrationCustomer(String stateRegistrationCustomer) {
+        this.stateRegistrationCustomer = stateRegistrationCustomer;
     }
 }

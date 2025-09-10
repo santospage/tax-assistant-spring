@@ -1,6 +1,6 @@
 package br.com.santospage.taxassistant.domain.repositories;
 
-import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
+import br.com.santospage.taxassistant.domain.models.FiscalMovement;
 
 import java.util.List;
 import java.util.Optional;

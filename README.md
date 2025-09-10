@@ -54,7 +54,7 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   │   └── ProductService.java
 │   │                       │   └── usecases
 │   │                       ├── domain
-│   │                       │   ├── entities
+│   │                       │   ├── models
 │   │                       │   │   ├── Customer.java
 │   │                       │   │   ├── FiscalMovement.java
 │   │                       │   │   └── Product.java
@@ -65,13 +65,14 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── FiscalMovementRepository.java
 │   │                       │       └── ProductRepository.java
 │   │                       ├── infrastructure
-│   │                       │   ├── database
+│   │                       │   ├── persistence
 │   │                       │   │   ├── CustomerRepositoryImpl.java
 │   │                       │   │   ├── CustomerRowMapper.java
 │   │                       │   │   ├── FiscalMovementRepositoryImpl.java
 │   │                       │   │   ├── FiscalMovementRowMapper.java
 │   │                       │   │   ├── ProductRepositoryImpl.java
 │   │                       │   │   └── ProductRowMapper.java
+│   │                       │   ├── security
 │   │                       │   ├── external
 │   │                       │   └── ia
 │   │                       ├── interfaces

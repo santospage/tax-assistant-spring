@@ -1,6 +1,6 @@
-package br.com.santospage.taxassistant.infrastructure.database;
+package br.com.santospage.taxassistant.infrastructure.persistence;
 
-import br.com.santospage.taxassistant.domain.entities.Product;
+import br.com.santospage.taxassistant.domain.models.Product;
 import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package br.com.santospage.taxassistant.domain.entities;
+package br.com.santospage.taxassistant.domain.models;
 
 public class FiscalMovement {
     private String company;
@@ -110,7 +110,7 @@ public class FiscalMovement {
     public void setTaxAliquotAumented(Double taxAliquotAumented) {
         this.taxAliquotAumented = taxAliquotAumented;
     }
-    
+
     public Double getTaxValueAumented() {
         return taxValueAumented;
     }

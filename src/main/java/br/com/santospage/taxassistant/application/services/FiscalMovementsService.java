@@ -1,7 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.entities.FiscalMovement;
 import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
+import br.com.santospage.taxassistant.domain.models.FiscalMovement;
 import br.com.santospage.taxassistant.domain.repositories.FiscalMovementRepository;
 import br.com.santospage.taxassistant.interfaces.dtos.FiscalMovementDTO;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class FiscalMovementsService {
                 .map(this::toDTO)
                 .toList();
     }
-    
+
     public List<FiscalMovementDTO> findAll() {
         List<FiscalMovementDTO> results = repository.findAll()
                 .stream()

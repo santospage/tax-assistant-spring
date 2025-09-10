@@ -1,4 +1,4 @@
-package br.com.santospage.taxassistant.domain.entities;
+package br.com.santospage.taxassistant.domain.models;
 
 public class Product {
     private String company;

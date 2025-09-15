@@ -1,6 +1,21 @@
 package br.com.santospage.taxassistant.application.services;
 
-/*
+import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
+import br.com.santospage.taxassistant.domain.models.Customer;
+import br.com.santospage.taxassistant.domain.repositories.CustomerRepository;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceTest {
 
@@ -12,74 +27,71 @@ class CustomerServiceTest {
     private CustomerService customerService;
 
     @Test
-    void shouldReturnCustomerDtoWhenExists() {
+    void shouldThrowWhenCustomerNotExists() {
         // Given
-        Customer entity = buildCustomer("000001", "CUSTOMER 001");
-        when(repository.findById("000001")).thenReturn(Optional.of(entity));
-
-        // When
-        CustomerDTO result = customerService.findById("000001");
-
-        // Then
-        assertNotNull(result);
-        assertEquals("CUSTOMER 001", result.name);
-        assertEquals("000001", result.id);
-        verify(repository).findById("000001");
-    }
-
-    @Test
-    void shouldReturnEmptyWhenCustomerNotExists() {
-        // Given
-        when(repository.findById("000099")).thenReturn(Optional.empty());
+        when(repository.findByFilialAndId("D RJ", "000099")).thenReturn(Optional.empty());
 
         // When / Then
         assertThrows(
-                CustomerNotFoundException.class, () -> {
-                    customerService.findById("000099");
-                }
+                CustomerNotFoundException.class,
+                () -> customerService.findByFilialAndId("D RJ", "000099")
         );
 
-        verify(repository).findById("000099");
+        verify(repository).findByFilialAndId("D RJ", "000099");
     }
 
     @Test
-    void shouldReturnAllCustomersAsDto() {
+    void shouldReturnCustomerWhenExists() {
         // Given
-        List<Customer> customers = List.of(
-                buildCustomer("000001", "CUSTOMER 001"),
-                buildCustomer("000002", "CUSTOMER 002")
-        );
+        Customer customer = new Customer();
+        customer.setCompany("D RJ");
+        customer.setId("000001");
+        customer.setName("CUSTOMER 001");
+
+        when(repository.findByFilialAndId("D RJ", "000001"))
+                .thenReturn(Optional.of(customer));
+
+        // When
+        Customer result = customerService.findByFilialAndId("D RJ", "000001");
+
+        // Then
+        assertNotNull(result);
+        assertEquals("D RJ", result.getCompany());
+        assertEquals("000001", result.getId());
+        assertEquals("CUSTOMER 001", result.getName());
+
+        verify(repository).findByFilialAndId("D RJ", "000001");
+    }
+
+    @Test
+    void shouldReturnAllCustomers() {
+        // Given
+        Customer c1 = new Customer();
+        c1.setId("000001");
+        c1.setName("CUSTOMER 001");
+        c1.setCompany("D RJ");
+
+        Customer c2 = new Customer();
+        c2.setId("000002");
+        c2.setName("CUSTOMER 002");
+        c2.setCompany("D RJ");
+
+        List<Customer> customers = List.of(c1, c2);
         when(repository.findAll()).thenReturn(customers);
 
         // When
-        List<CustomerDTO> result = customerService.findAll();
+        List<Customer> result = customerService.findAll();
 
         // Then
         assertEquals(2, result.size());
-        assertEquals("CUSTOMER 001", result.get(0).name);
-        assertEquals("CUSTOMER 002", result.get(1).name);
+        assertEquals("000001", result.getFirst().getId());
+        assertEquals("CUSTOMER 001", result.get(0).getName());
+        assertEquals("D RJ", result.get(0).getCompany());
+
+        assertEquals("000002", result.get(1).getId());
+        assertEquals("CUSTOMER 002", result.get(1).getName());
+        assertEquals("D RJ", result.get(1).getCompany());
+
         verify(repository).findAll();
     }
-
-    // Helper method to create a dummy customer
-    private Customer buildCustomer(String id, String name) {
-        Customer c = new Customer();
-        c.setId(id);
-        c.setName(name);
-        c.setCompany("010101");
-        c.setNatureCustomer("J");
-        c.setAddress("RUA 9 DE JULHO, 123");
-        c.setTypeCustomer("F");
-        c.setUfCustomer("SP");
-        c.setMunicipalCode("3550308");
-        c.setCityCustomer("SAO PAULO");
-        c.setNeighborhoodCustomer("JARDINS");
-        c.setCountryCustomer("BRASIL");
-        c.setZipCodeCustomer("01000-000");
-        c.setPhoneCustomer("(11) 99999-9999");
-        c.setCnpjCustomer("11.111.111/0001-11");
-        c.setStateRegistry("123456");
-        return c;
-    }
 }
-*/

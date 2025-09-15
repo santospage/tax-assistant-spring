@@ -1,52 +1,40 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.ProductService;
-import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import br.com.santospage.taxassistant.domain.models.Product;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
-@Tag(name = "products", description = "Endpoints for managing products")
 public class ProductController {
+
     private final ProductService service;
 
-    ProductController(ProductService productService) {
-        this.service = productService;
+    public ProductController(ProductService service) {
+        this.service = service;
     }
 
-    // Search /api/products/LJTEST01
-    @GetMapping("/{id}")
-    @Operation(summary = "Search for a product by ID",
-            description = "Returns details of a specific product by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Product successfully found"),
-            @ApiResponse(responseCode = "404", description = "Product not found")
-    })
-    public ResponseEntity<ProductDTO> getById(@PathVariable String id) {
-        ProductDTO product = service.findById(id);
-        return ResponseEntity.ok(product);
-    }
-
-    // Search all (ex: /api/products)
+    // Search all products
     @GetMapping
-    @Operation(summary = "Search all products", description = "Returns details all product")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Products successfully found"),
-            @ApiResponse(responseCode = "404", description = "Products not found")
-    })
-    public ResponseEntity<List<ProductDTO>> getAll(@RequestParam Map<String, String> allParams) {
-        List<ProductDTO> results = service.findAll();
-        if (results.isEmpty()) {
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<List<Product>> getAll() {
+        List<Product> products = service.findAll();
+
+        if (products.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Response 204
         }
-        return ResponseEntity.ok(results);
+
+        return ResponseEntity.ok(products); // Response 200
+    }
+
+    // Search product by ID
+    @GetMapping(params = {"company", "id"})
+    public Product getById(@RequestParam String company, @RequestParam String id) {
+        return service.findByFilialAndId(company, id);
     }
 }

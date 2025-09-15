@@ -1,23 +1,43 @@
 package br.com.santospage.taxassistant.domain.models;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.SQLRestriction;
+
+@Entity
+@Table(name = "SB1T10")
+@SQLRestriction("TRIM(D_E_L_E_T_) = ' '")
 public class Product {
-    private String company;
+    @Column(name = "B1_FILIAL")
+    private String filial;
+    @Id
+    @Column(name = "B1_COD")
     private String id;
+    @Column(name = "B1_DESC")
     private String name;
+    @Column(name = "B1_TIPO")
     private String typeProduct;
+    @Column(name = "B1_CEST")
     private String specifingCodeST;
+    @Column(name = "B1_UM")
     private String unitMeasure;
+    @Column(name = "B1_PRV1")
     private Double unitValue;
+    @Column(name = "B1_TS")
     private String standarOutflowCode;
+    @Column(name = "B1_TE")
     private String standarInflowCode;
+    @Column(name = "B1_POSIPI")
     private String mercosulExtNomenclature;
 
     public String getCompany() {
-        return company;
+        return filial;
     }
 
     public void setCompany(String company) {
-        this.company = company;
+        this.filial = company;
     }
 
     public String getId() {

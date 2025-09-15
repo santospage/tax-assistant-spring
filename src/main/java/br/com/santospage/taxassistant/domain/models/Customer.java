@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLRestriction;
 public class Customer {
 
     @Column(name = "A1_FILIAL")
-    private String company;
+    private String filial;
     @Id
     @Column(name = "A1_COD")
     private String id;
@@ -46,11 +46,11 @@ public class Customer {
 
     // Getters and Setters
     public String getCompany() {
-        return company;
+        return filial;
     }
 
     public void setCompany(String company) {
-        this.company = company;
+        this.filial = company;
     }
 
     public String getId() {

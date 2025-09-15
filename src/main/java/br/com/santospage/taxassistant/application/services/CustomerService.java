@@ -13,7 +13,6 @@ public class CustomerService {
     private final CustomerRepository repository;
 
     public CustomerService(CustomerRepository repository) {
-
         this.repository = repository;
     }
 
@@ -21,9 +20,9 @@ public class CustomerService {
         return repository.findAll();
     }
 
-    public Customer findById(String id) {
-        return repository.findById(id)
+    public Customer findByFilialAndId(String filial, String id) {
+        return repository.findByFilialAndId(filial, id)
                 .orElseThrow(() -> new CustomerNotFoundException(
-                        "Customer not found with ID: " + id));
+                        "Customer not found with ID: " + filial + id));
     }
 }

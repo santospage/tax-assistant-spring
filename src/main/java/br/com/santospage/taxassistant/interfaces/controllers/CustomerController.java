@@ -1,7 +1,9 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.CustomerService;
+import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
 import br.com.santospage.taxassistant.domain.models.Customer;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/customers")
+@Tag(name = "customers", description = "Endpoints for managing customers")
 public class CustomerController {
 
     private final CustomerService service;
@@ -34,7 +37,12 @@ public class CustomerController {
 
     // Search customer by ID
     @GetMapping(params = {"company", "id"})
-    public Customer getById(@RequestParam String company, @RequestParam String id) {
-        return service.findByFilialAndId(company, id);
+    public ResponseEntity<Customer> getById(@RequestParam String company, @RequestParam String id) {
+        try {
+            Customer customer = service.findByFilialAndId(company, id);
+            return ResponseEntity.ok(customer);
+        } catch (CustomerNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
+import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.FiscalMovement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -22,20 +23,6 @@ public class FiscalMovementController {
         this.service = fiscalMovementService;
     }
 
-    // Search /api/fiscal-movements/F2D123456
-    @GetMapping("/{id}")
-    public ResponseEntity<FiscalMovement> getById(@PathVariable String id) {
-        FiscalMovement fm = service.findById(id);
-        return ResponseEntity.ok(fm);
-    }
-
-    // Search for tableCode (ex: /api/fiscal-movements?table=SD2)
-    @GetMapping("/table/{table}")
-    public ResponseEntity<List<FiscalMovement>> getByTable(@PathVariable String table) {
-        List<FiscalMovement> results = service.findByTableMovement(table);
-        return ResponseEntity.ok(results);
-    }
-
     // Search all (ex: /api/fiscal-movements)
     @GetMapping
     public ResponseEntity<List<FiscalMovement>> getAll() {
@@ -46,6 +33,28 @@ public class FiscalMovementController {
         }
 
         return ResponseEntity.ok(results); // Response 200
+    }
+
+    // Search /api/fiscal-movements/F2D123456
+    @GetMapping("/{id}")
+    public ResponseEntity<FiscalMovement> getById(@PathVariable String id) {
+        try {
+            FiscalMovement fm = service.findById(id);
+            return ResponseEntity.ok(fm);
+        } catch (FiscalMovementNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Search for tableCode (ex: /api/fiscal-movements?table=SD2)
+    @GetMapping("/table/{table}")
+    public ResponseEntity<List<FiscalMovement>> getByTable(@PathVariable String table) {
+        try {
+            List<FiscalMovement> results = service.findByTableMovement(table);
+            return ResponseEntity.ok(results);
+        } catch (FiscalMovementNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
 

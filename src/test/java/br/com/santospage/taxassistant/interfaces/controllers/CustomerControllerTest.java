@@ -1,80 +1,133 @@
-/*
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.CustomerService;
+import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
 import br.com.santospage.taxassistant.domain.models.Customer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CustomerController.class)
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 public class CustomerControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private CustomerService customerService;
+    private CustomerService service;
 
     @Test
-    void shouldReturnAllCustomers() throws Exception {
-        // Mockando os clientes corretamente
-        List<Customer> customers = List.of(
-                new Customer("000001", "CUSTOMER 001", "D RJ"),
-                new Customer("000002", "CUSTOMER 002", "D RJ")
-        );
-        when(customerService.findAll()).thenReturn(customers);
+    void shouldGetByIdFound() throws Exception {
+        Customer customer = new Customer();
+        customer.setId("FIN001");
+        customer.setName("CLIENTE PJ S/ IMPOSTO");
+        customer.setNatureCustomer("          ");
+        customer.setAddress("RUA                                     ");
+        customer.setTypeCustomer("F");
+        customer.setUfCustomer("SP");
+        customer.setMunicipalCode("50308");
+        customer.setCityCustomer("SAO PAULO                                                   ");
+        customer.setNeighborhoodCustomer("                              ");
+        customer.setZipCodeCustomer("        ");
+        customer.setCountryCustomer("   ");
+        customer.setPhoneCustomer("               ");
+        customer.setNationalRegistryCustomer("17779772000176");
+        customer.setStateRegistrationCustomer("                  ");
+        customer.setCompany("D RJ    ");
+
+        when(service.findByFilialAndId("D RJ", "FIN001")).thenReturn(customer);
 
         mockMvc.perform(get("/api/customers")
-                                .accept("application/json"))
+                                .param("company", "D RJ")
+                                .param("id", "FIN001")
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("000001"))
-                .andExpect(jsonPath("$[0].name").value("CUSTOMER 001"))
-                .andExpect(jsonPath("$[0].company").value("D RJ"))
-                .andExpect(jsonPath("$[1].id").value("000002"))
-                .andExpect(jsonPath("$[1].name").value("CUSTOMER 002"))
-                .andExpect(jsonPath("$[1].company").value("D RJ"));
-
-        verify(customerService).findAll();
+                .andExpect(jsonPath("$.id").value("FIN001"))
+                .andExpect(jsonPath("$.name").value("CLIENTE PJ S/ IMPOSTO"));
     }
 
     @Test
-    void shouldReturnCustomerById() throws Exception {
-        Customer customer = new Customer();
-        when(customerService.findByFilialAndId("D RJ", "000001"))
-                .thenReturn(customer);
+    void shouldGetByIdNotFound() throws Exception {
+        when(service.findByFilialAndId("D RJ", "FIN999"))
+                .thenThrow(new CustomerNotFoundException(""));
 
-
-        mockMvc.perform(get("/api/customers/000001")
-                                .accept("application/json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("000001"))
-                .andExpect(jsonPath("$.name").value("CUSTOMER 001"))
-                .andExpect(jsonPath("$.company").value("D RJ"));
-
-        verify(customerService).findByFilialAndId("D RJ", "000001");
-    }
-
-    @Test
-    void shouldReturnNotFoundForInvalidCustomerId() throws Exception {
-        when(customerService.findByFilialAndId("D RJ", "999999"))
-                .thenReturn(null);
-
-        mockMvc.perform(get("/api/customers/999999")
-                                .accept("application/json"))
+        mockMvc.perform(get("/api/customers")
+                                .param("company", "D RJ")
+                                .param("id", "FIN999")
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
 
-        verify(customerService).findByFilialAndId("D RJ", "999999");
+    @Test
+    void shouldGetAllSuccess() throws Exception {
+        Customer customer1 = new Customer();
+        customer1.setId("FIN001");
+        customer1.setName("Cliente 1");
+        customer1.setNatureCustomer("          ");
+        customer1.setAddress("RUA                                     ");
+        customer1.setTypeCustomer("F");
+        customer1.setUfCustomer("SP");
+        customer1.setMunicipalCode("50308");
+        customer1.setCityCustomer("SAO PAULO                                                   ");
+        customer1.setNeighborhoodCustomer("                              ");
+        customer1.setZipCodeCustomer("        ");
+        customer1.setCountryCustomer("   ");
+        customer1.setPhoneCustomer("               ");
+        customer1.setNationalRegistryCustomer("17779772000176");
+        customer1.setStateRegistrationCustomer("                  ");
+        customer1.setCompany("D RJ    ");
+
+        Customer customer2 = new Customer();
+        customer2.setId("FIN002");
+        customer2.setName("Cliente 2");
+        customer2.setNatureCustomer("          ");
+        customer2.setAddress("RUA                                     ");
+        customer2.setTypeCustomer("F");
+        customer2.setUfCustomer("SP");
+        customer2.setMunicipalCode("50308");
+        customer2.setCityCustomer("SAO PAULO                                                   ");
+        customer2.setNeighborhoodCustomer("                              ");
+        customer2.setZipCodeCustomer("        ");
+        customer2.setCountryCustomer("   ");
+        customer2.setPhoneCustomer("               ");
+        customer2.setNationalRegistryCustomer("17779772000176");
+        customer2.setStateRegistrationCustomer("                  ");
+        customer2.setCompany("D RJ    ");
+
+        List<Customer> customers = Arrays.asList(customer1, customer2);
+
+        // Mock
+        when(service.findAll()).thenReturn(customers);
+
+        mockMvc.perform(get("/api/customers")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("FIN001"))
+                .andExpect(jsonPath("$[0].name").value("Cliente 1"))
+                .andExpect(jsonPath("$[1].id").value("FIN002"))
+                .andExpect(jsonPath("$[1].name").value("Cliente 2"));
+    }
+
+    @Test
+    void shouldGetAllNoContent() throws Exception {
+        when(service.findAll()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/customers")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }
-*/

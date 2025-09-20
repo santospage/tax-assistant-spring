@@ -19,30 +19,30 @@ public class Customer {
     private String id;
     @Column(name = "A1_NOME")
     private String name;
-    @Column(name = "A1_NATUREZ")
-    private String natureCustomer;
-    @Column(name = "A1_END")
-    private String address;
+    @Column(name = "A1_NATUREZ", nullable = true)
+    private String natureCustomer = "";
+    @Column(name = "A1_END", nullable = true)
+    private String address = "";
     @Column(name = "A1_TIPO")
     private String typeCustomer;
-    @Column(name = "A1_EST")
-    private String ufCustomer;
-    @Column(name = "A1_COD_MUN")
+    @Column(name = "A1_EST", nullable = true)
+    private String ufCustomer = "";
+    @Column(name = "A1_COD_MUN", nullable = true)
     private String municipalCode;
-    @Column(name = "A1_MUN")
-    private String cityCustomer;
-    @Column(name = "A1_BAIRRO")
-    private String neighborhoodCustomer;
-    @Column(name = "A1_CEP")
-    private String zipCodeCustomer;
-    @Column(name = "A1_PAIS")
-    private String countryCustomer;
-    @Column(name = "A1_TEL")
-    private String phoneCustomer;
-    @Column(name = "A1_CGC")
-    private String nationalRegistryCustomer;
-    @Column(name = "A1_INSCR")
-    private String stateRegistrationCustomer;
+    @Column(name = "A1_MUN", nullable = true)
+    private String cityCustomer = "";
+    @Column(name = "A1_BAIRRO", nullable = true)
+    private String neighborhoodCustomer = "";
+    @Column(name = "A1_CEP", nullable = true)
+    private String zipCodeCustomer = "";
+    @Column(name = "A1_PAIS", nullable = true)
+    private String countryCustomer = "";
+    @Column(name = "A1_TEL", nullable = true)
+    private String phoneCustomer = "";
+    @Column(name = "A1_CGC", nullable = true)
+    private String nationalRegistryCustomer = "";
+    @Column(name = "A1_INSCR", nullable = true)
+    private String stateRegistrationCustomer = "";
 
     // Getters and Setters
     public String getCompany() {

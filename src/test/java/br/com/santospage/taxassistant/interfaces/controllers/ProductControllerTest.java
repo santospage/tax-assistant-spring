@@ -1,107 +1,97 @@
-/*
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.ProductService;
 import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
 import br.com.santospage.taxassistant.domain.models.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProductController.class)
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-class ProductControllerTest {
+public class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private ProductService productService;
-
-    private Product product1;
-    private Product product2;
-
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-
-        product1 = new Product();
-        product1.setId("P001");
-        product1.setName("Product 001");
-
-        product2 = new Product();
-        product2.setId("P002");
-        product2.setName("Product 002");
-    }
+    @MockBean
+    private ProductService service;
 
     @Test
-    void testGetProductByIdFound() throws Exception {
-        when(productService.findByFilialAndId("D RJ 02", "P001")).thenReturn(product1);
+    void shouldGetByIdFound() throws Exception {
+        Product product = new Product();
+        product.setCompany("01");
+        product.setId("TEST001");
+        product.setName("PRODUCT TEST001");
 
-        mockMvc.perform(get("/api/products/{id}", "P001")
+        when(service.findByFilialAndId("01", "TEST001")).thenReturn(product);
+
+        mockMvc.perform(get("/api/products")
+                                .param("company", "01")
+                                .param("id", "TEST001")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("P001"))
-                .andExpect(jsonPath("$.name").value("Product 001"))
-                .andExpect(jsonPath("$.category").value("Category A"));
-
-        verify(productService).findByFilialAndId("D RJ 02", "P001");
+                .andExpect(jsonPath("$.id").value("TEST001"))
+                .andExpect(jsonPath("$.name").value("PRODUCT TEST001"));
     }
 
     @Test
-    void testGetProductByIdNotFound() throws Exception {
-        when(productService.findByFilialAndId("D RJ 02", "P999"))
-                .thenThrow(new ProductNotFoundException("Product not found with ID: P999"));
+    void shouldGetByIdNotFound() throws Exception {
+        when(service.findByFilialAndId("01", "TEST999"))
+                .thenThrow(new ProductNotFoundException(""));
 
-        mockMvc.perform(get("/api/products/{id}", "P999")
+        mockMvc.perform(get("/api/products")
+                                .param("company", "01")
+                                .param("id", "TEST999")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-
-        verify(productService).findByFilialAndId("D RJ 02", "P999");
     }
 
     @Test
-    void testGetAllProductsFound() throws Exception {
-        List<Product> productList = List.of(product1, product2);
-        when(productService.findAll()).thenReturn(productList);
+    void shouldGetAllSuccess() throws Exception {
+        Product product1 = new Product();
+        product1.setCompany("01");
+        product1.setId("TEST001");
+        product1.setName("PRODUCT TEST001");
+
+        Product product2 = new Product();
+        product2.setCompany("01");
+        product2.setId("TEST002");
+        product2.setName("PRODUCT TEST002");
+
+        List<Product> products = Arrays.asList(product1, product2);
+
+        // Mock
+        when(service.findAll()).thenReturn(products);
 
         mockMvc.perform(get("/api/products")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].id").value("P001"))
-                .andExpect(jsonPath("$[0].name").value("Product 001"))
-                .andExpect(jsonPath("$[0].category").value("Category A"))
-                .andExpect(jsonPath("$[1].id").value("P002"))
-                .andExpect(jsonPath("$[1].name").value("Product 002"))
-                .andExpect(jsonPath("$[1].category").value("Category B"));
-
-        verify(productService).findAll();
+                .andExpect(jsonPath("$[0].id").value("TEST001"))
+                .andExpect(jsonPath("$[0].name").value("PRODUCT TEST001"))
+                .andExpect(jsonPath("$[1].id").value("TEST002"))
+                .andExpect(jsonPath("$[1].name").value("PRODUCT TEST002"));
     }
 
     @Test
-    void testGetAllProductsNotFound() throws Exception {
-        when(productService.findAll()).thenReturn(List.of());
+    void shouldGetAllNoContent() throws Exception {
+        when(service.findAll()).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/api/products")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
-
-        verify(productService).findAll();
     }
 }
-*/

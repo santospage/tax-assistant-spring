@@ -33,41 +33,30 @@ public class CustomerControllerTest {
     @Test
     void shouldGetByIdFound() throws Exception {
         Customer customer = new Customer();
-        customer.setId("FIN001");
-        customer.setName("CLIENTE PJ S/ IMPOSTO");
-        customer.setNatureCustomer("          ");
-        customer.setAddress("RUA                                     ");
+        customer.setCompany("01");
+        customer.setId("TEST001");
+        customer.setName("CUSTOMER TEST001");
         customer.setTypeCustomer("F");
-        customer.setUfCustomer("SP");
-        customer.setMunicipalCode("50308");
-        customer.setCityCustomer("SAO PAULO                                                   ");
-        customer.setNeighborhoodCustomer("                              ");
-        customer.setZipCodeCustomer("        ");
-        customer.setCountryCustomer("   ");
-        customer.setPhoneCustomer("               ");
-        customer.setNationalRegistryCustomer("17779772000176");
-        customer.setStateRegistrationCustomer("                  ");
-        customer.setCompany("D RJ    ");
 
-        when(service.findByFilialAndId("D RJ", "FIN001")).thenReturn(customer);
+        when(service.findByFilialAndId("01", "TEST001")).thenReturn(customer);
 
         mockMvc.perform(get("/api/customers")
-                                .param("company", "D RJ")
-                                .param("id", "FIN001")
+                                .param("company", "01")
+                                .param("id", "TEST001")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("FIN001"))
-                .andExpect(jsonPath("$.name").value("CLIENTE PJ S/ IMPOSTO"));
+                .andExpect(jsonPath("$.id").value("TEST001"))
+                .andExpect(jsonPath("$.name").value("CUSTOMER TEST001"));
     }
 
     @Test
     void shouldGetByIdNotFound() throws Exception {
-        when(service.findByFilialAndId("D RJ", "FIN999"))
+        when(service.findByFilialAndId("01", "TEST999"))
                 .thenThrow(new CustomerNotFoundException(""));
 
         mockMvc.perform(get("/api/customers")
-                                .param("company", "D RJ")
-                                .param("id", "FIN999")
+                                .param("company", "01")
+                                .param("id", "TEST999")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -75,38 +64,16 @@ public class CustomerControllerTest {
     @Test
     void shouldGetAllSuccess() throws Exception {
         Customer customer1 = new Customer();
-        customer1.setId("FIN001");
-        customer1.setName("Cliente 1");
-        customer1.setNatureCustomer("          ");
-        customer1.setAddress("RUA                                     ");
+        customer1.setCompany("01");
+        customer1.setId("TEST001");
+        customer1.setName("CUSTOMER TEST001");
         customer1.setTypeCustomer("F");
-        customer1.setUfCustomer("SP");
-        customer1.setMunicipalCode("50308");
-        customer1.setCityCustomer("SAO PAULO                                                   ");
-        customer1.setNeighborhoodCustomer("                              ");
-        customer1.setZipCodeCustomer("        ");
-        customer1.setCountryCustomer("   ");
-        customer1.setPhoneCustomer("               ");
-        customer1.setNationalRegistryCustomer("17779772000176");
-        customer1.setStateRegistrationCustomer("                  ");
-        customer1.setCompany("D RJ    ");
 
         Customer customer2 = new Customer();
-        customer2.setId("FIN002");
-        customer2.setName("Cliente 2");
-        customer2.setNatureCustomer("          ");
-        customer2.setAddress("RUA                                     ");
+        customer2.setCompany("01");
+        customer2.setId("TEST002");
+        customer2.setName("CUSTOMER TEST002");
         customer2.setTypeCustomer("F");
-        customer2.setUfCustomer("SP");
-        customer2.setMunicipalCode("50308");
-        customer2.setCityCustomer("SAO PAULO                                                   ");
-        customer2.setNeighborhoodCustomer("                              ");
-        customer2.setZipCodeCustomer("        ");
-        customer2.setCountryCustomer("   ");
-        customer2.setPhoneCustomer("               ");
-        customer2.setNationalRegistryCustomer("17779772000176");
-        customer2.setStateRegistrationCustomer("                  ");
-        customer2.setCompany("D RJ    ");
 
         List<Customer> customers = Arrays.asList(customer1, customer2);
 
@@ -116,10 +83,10 @@ public class CustomerControllerTest {
         mockMvc.perform(get("/api/customers")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("FIN001"))
-                .andExpect(jsonPath("$[0].name").value("Cliente 1"))
-                .andExpect(jsonPath("$[1].id").value("FIN002"))
-                .andExpect(jsonPath("$[1].name").value("Cliente 2"));
+                .andExpect(jsonPath("$[0].id").value("TEST001"))
+                .andExpect(jsonPath("$[0].name").value("CUSTOMER TEST001"))
+                .andExpect(jsonPath("$[1].id").value("TEST002"))
+                .andExpect(jsonPath("$[1].name").value("CUSTOMER TEST002"));
     }
 
     @Test

@@ -15,22 +15,22 @@ public class Product {
     @Id
     @Column(name = "B1_COD")
     private String id;
-    @Column(name = "B1_DESC")
-    private String name;
-    @Column(name = "B1_TIPO")
-    private String typeProduct;
-    @Column(name = "B1_CEST")
-    private String specifingCodeST;
-    @Column(name = "B1_UM")
-    private String unitMeasure;
-    @Column(name = "B1_PRV1")
-    private Double unitValue;
-    @Column(name = "B1_TS")
-    private String standarOutflowCode;
-    @Column(name = "B1_TE")
-    private String standarInflowCode;
-    @Column(name = "B1_POSIPI")
-    private String mercosulExtNomenclature;
+    @Column(name = "B1_DESC", nullable = true)
+    private String name = "";
+    @Column(name = "B1_TIPO", nullable = true)
+    private String typeProduct = "";
+    @Column(name = "B1_CEST", nullable = true)
+    private String specifingCodeST = "";
+    @Column(name = "B1_UM", nullable = true)
+    private String unitMeasure = "";
+    @Column(name = "B1_PRV1", nullable = true)
+    private Double unitValue = 0.0;
+    @Column(name = "B1_TS", nullable = true)
+    private String standarOutflowCode = "";
+    @Column(name = "B1_TE", nullable = true)
+    private String standarInflowCode = "";
+    @Column(name = "B1_POSIPI", nullable = true)
+    private String mercosulExtNomenclature = "";
 
     public String getCompany() {
         return filial;

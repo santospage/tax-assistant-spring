@@ -1,23 +1,43 @@
-package br.com.santospage.taxassistant.domain.entities;
+package br.com.santospage.taxassistant.domain.models;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.SQLRestriction;
+
+@Entity
+@Table(name = "SB1T10")
+@SQLRestriction("TRIM(D_E_L_E_T_) = ' '")
 public class Product {
-    private String company;
+    @Column(name = "B1_FILIAL")
+    private String filial;
+    @Id
+    @Column(name = "B1_COD")
     private String id;
-    private String name;
-    private String typeProduct;
-    private String specifingCodeST;
-    private String unitMeasure;
-    private Double unitValue;
-    private String standarOutflowCode;
-    private String standarInflowCode;
-    private String mercosulExtNomenclature;
+    @Column(name = "B1_DESC", nullable = true)
+    private String name = "";
+    @Column(name = "B1_TIPO", nullable = true)
+    private String typeProduct = "";
+    @Column(name = "B1_CEST", nullable = true)
+    private String specifingCodeST = "";
+    @Column(name = "B1_UM", nullable = true)
+    private String unitMeasure = "";
+    @Column(name = "B1_PRV1", nullable = true)
+    private Double unitValue = 0.0;
+    @Column(name = "B1_TS", nullable = true)
+    private String standarOutflowCode = "";
+    @Column(name = "B1_TE", nullable = true)
+    private String standarInflowCode = "";
+    @Column(name = "B1_POSIPI", nullable = true)
+    private String mercosulExtNomenclature = "";
 
     public String getCompany() {
-        return company;
+        return filial;
     }
 
     public void setCompany(String company) {
-        this.company = company;
+        this.filial = company;
     }
 
     public String getId() {

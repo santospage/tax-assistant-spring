@@ -1,24 +1,20 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.entities.Product;
-import br.com.santospage.taxassistant.domain.exceptions.GlobalExceptionHandler;
 import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
+import br.com.santospage.taxassistant.domain.models.Product;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
-import br.com.santospage.taxassistant.interfaces.controllers.CustomerController;
-import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -29,78 +25,69 @@ class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    @BeforeEach
-    void setUp() {
-        CustomerService customerService = mock(CustomerService.class);
-        Object mockMvc = MockMvcBuilders
-                .standaloneSetup(new CustomerController(customerService))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-    }
-
     @Test
-    void shouldReturnProductDtoWhenExists() {
+    void shouldThrowWhenProductNotExists() {
         // Given
-        Product entity = buildProduct("000001", "Notebook");
-        when(repository.findById("000001")).thenReturn(Optional.of(entity));
-
-        // When
-        ProductDTO result = productService.findById("000001");
-
-        // Then
-        assertNotNull(result);
-        assertEquals("Notebook", result.name);
-        assertEquals("000001", result.id);
-        verify(repository).findById("000001");
-    }
-
-    @Test
-    void shouldReturnEmptyWhenProductNotExists() {
-        // Given
-        when(repository.findById("000099")).thenReturn(Optional.empty());
+        when(repository.findByFilialAndId("D RJ 02", "000001")).thenReturn(Optional.empty());
 
         // When / Then
         assertThrows(
-                ProductNotFoundException.class, () -> {
-                    productService.findById("000099");
-                }
+                ProductNotFoundException.class,
+                () -> productService.findByFilialAndId("D RJ 02", "000001")
         );
 
-        verify(repository).findById("000099");
+        verify(repository).findByFilialAndId("D RJ 02", "000001");
     }
 
     @Test
-    void shouldReturnAllProductsAsDto() {
+    void shouldReturnProductWhenExists() {
         // Given
-        List<Product> products = List.of(
-                buildProduct("000001", "Notebook"),
-                buildProduct("000002", "Smartphone")
-        );
+        Product product = new Product();
+        product.setCompany("D RJ 02");
+        product.setId("000001");
+        product.setName("NOTEBOOK");
+
+        when(repository.findByFilialAndId("D RJ 02", "000001"))
+                .thenReturn(Optional.of(product));
+
+        // When
+        Product result = productService.findByFilialAndId("D RJ 02", "000001");
+
+        // Then
+        assertNotNull(result);
+        assertEquals("D RJ 02", result.getCompany());
+        assertEquals("000001", result.getId());
+        assertEquals("NOTEBOOK", result.getName());
+
+        verify(repository).findByFilialAndId("D RJ 02", "000001");
+    }
+
+    @Test
+    void shouldReturnAllProducts() {
+        // Given
+        Product p1 = new Product();
+        p1.setId("P001");
+        p1.setName("Product 001");
+
+        Product p2 = new Product();
+        p2.setId("P002");
+        p2.setName("Product 002");
+
+        List<Product> products = List.of(p1, p2);
         when(repository.findAll()).thenReturn(products);
 
         // When
-        List<ProductDTO> result = productService.findAll();
+        List<Product> result = productService.findAll();
 
         // Then
         assertEquals(2, result.size());
-        assertEquals("Notebook", result.get(0).name);
-        assertEquals("Smartphone", result.get(1).name);
-        verify(repository).findAll();
-    }
 
-    // Helper method to create a dummy product
-    private Product buildProduct(String id, String name) {
-        Product p = new Product();
-        p.setId(id);
-        p.setName(name);
-        p.setCompany("010101");
-        p.setTypeProduct("PA");
-        p.setSpecifingCodeST("2200100");
-        p.setUnitMeasure("UN");
-        p.setUnitValue(3500.00);
-        p.setStandarOutflowCode("001");
-        p.setStandarInflowCode("501");
-        p.setMercosulExtNomenclature("38112140");
-        return p;
+        assertEquals("P001", result.get(0).getId());
+        assertEquals("Product 001", result.get(0).getName());
+
+        assertEquals("P002", result.get(1).getId());
+        assertEquals("Product 002", result.get(1).getName());
+
+        verify(repository).findAll();
     }
 }

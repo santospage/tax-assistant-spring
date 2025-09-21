@@ -1,16 +1,18 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.CustomerService;
-import br.com.santospage.taxassistant.interfaces.dtos.CustomerDTO;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
+import br.com.santospage.taxassistant.domain.models.Customer;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -19,35 +21,30 @@ public class CustomerController {
 
     private final CustomerService service;
 
-    public CustomerController(CustomerService customerService) {
-        this.service = customerService;
+    public CustomerController(CustomerService service) {
+        this.service = service;
     }
 
-    // Search /api/customers/000001
-    @GetMapping("/{id}")
-    @Operation(summary = "Search for a customer by ID",
-            description = "Returns details of a specific customer by its ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Customer successfully found"),
-            @ApiResponse(responseCode = "404", description = "Customer not found")
-    })
-    public ResponseEntity<CustomerDTO> getById(@PathVariable String id) {
-        CustomerDTO customer = service.findById(id);
-        return ResponseEntity.ok(customer);
-    }
-
-    // Search all (ex: /api/customers)
+    // Search all customers
     @GetMapping
-    @Operation(summary = "Search all customers", description = "Returns details all customer")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Customers successfully found"),
-            @ApiResponse(responseCode = "404", description = "Customers not found")
-    })
-    public ResponseEntity<List<CustomerDTO>> getAll(@RequestParam Map<String, String> allParams) {
-        List<CustomerDTO> results = service.findAll();
-        if (results.isEmpty()) {
-            return ResponseEntity.noContent().build();
+    public ResponseEntity<List<Customer>> getAll() {
+        List<Customer> customers = service.findAll();
+
+        if (customers.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Response 204
         }
-        return ResponseEntity.ok(results);
+
+        return ResponseEntity.ok(customers); // Response 200
+    }
+
+    // Search customer by ID
+    @GetMapping(params = {"company", "id"})
+    public ResponseEntity<Customer> getById(@RequestParam String company, @RequestParam String id) {
+        try {
+            Customer customer = service.findByFilialAndId(company, id);
+            return ResponseEntity.ok(customer);
+        } catch (CustomerNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        }
     }
 }

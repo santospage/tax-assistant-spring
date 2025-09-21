@@ -1,90 +1,97 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.ProductService;
-import br.com.santospage.taxassistant.domain.exceptions.GlobalExceptionHandler;
 import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
-import br.com.santospage.taxassistant.interfaces.dtos.ProductDTO;
-import org.junit.jupiter.api.BeforeEach;
+import br.com.santospage.taxassistant.domain.models.Product;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 public class ProductControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock
-    private ProductService productService;
-
-    @InjectMocks
-    private ProductDTO productDTO;
-
-    @BeforeEach
-    void setup() {
-        productService = mock(ProductService.class);
-        mockMvc = MockMvcBuilders
-                .standaloneSetup(new ProductController(productService))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-
-        productDTO = new ProductDTO();
-        productDTO.id = "000001";
-        productDTO.name = "Notebook";
-    }
+    @MockBean
+    private ProductService service;
 
     @Test
-    void testGetByIdFound() throws Exception {
-        when(productService.findById("000001")).thenReturn(productDTO);
+    void shouldGetByIdFound() throws Exception {
+        Product product = new Product();
+        product.setCompany("01");
+        product.setId("TEST001");
+        product.setName("PRODUCT TEST001");
 
-        mockMvc.perform(get("/api/products/000001")
-                                .accept("application/json"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("000001"))
-                .andExpect(jsonPath("$.name").value("Notebook"));
-    }
-
-    @Test
-    void testGetByIdNotFound() throws Exception {
-        when(productService.findById("NOTFOUND"))
-                .thenThrow(new ProductNotFoundException("Product not found with id: NOTFOUND"));
-
-        mockMvc.perform(get("/api/products/NOTFOUND")
-                                .accept("application/json"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("Product not found with id: NOTFOUND"));
-    }
-
-    @Test
-    void testGetAllFound() throws Exception {
-        when(productService.findAll()).thenReturn(List.of(productDTO));
+        when(service.findByFilialAndId("01", "TEST001")).thenReturn(product);
 
         mockMvc.perform(get("/api/products")
-                                .accept("application/json"))
+                                .param("company", "01")
+                                .param("id", "TEST001")
+                                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("000001"));
+                .andExpect(jsonPath("$.id").value("TEST001"))
+                .andExpect(jsonPath("$.name").value("PRODUCT TEST001"));
     }
 
     @Test
-    void testGetAllNoContent() throws Exception {
-        when(productService.findAll()).thenThrow(new ProductNotFoundException("No products found"));
+    void shouldGetByIdNotFound() throws Exception {
+        when(service.findByFilialAndId("01", "TEST999"))
+                .thenThrow(new ProductNotFoundException(""));
 
         mockMvc.perform(get("/api/products")
-                                .accept("application/json"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("No products found"));
+                                .param("company", "01")
+                                .param("id", "TEST999")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldGetAllSuccess() throws Exception {
+        Product product1 = new Product();
+        product1.setCompany("01");
+        product1.setId("TEST001");
+        product1.setName("PRODUCT TEST001");
+
+        Product product2 = new Product();
+        product2.setCompany("01");
+        product2.setId("TEST002");
+        product2.setName("PRODUCT TEST002");
+
+        List<Product> products = Arrays.asList(product1, product2);
+
+        // Mock
+        when(service.findAll()).thenReturn(products);
+
+        mockMvc.perform(get("/api/products")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("TEST001"))
+                .andExpect(jsonPath("$[0].name").value("PRODUCT TEST001"))
+                .andExpect(jsonPath("$[1].id").value("TEST002"))
+                .andExpect(jsonPath("$[1].name").value("PRODUCT TEST002"));
+    }
+
+    @Test
+    void shouldGetAllNoContent() throws Exception {
+        when(service.findAll()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/products")
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 }
-

@@ -3,6 +3,7 @@ package br.com.santospage.taxassistant.interfaces.controllers;
 import br.com.santospage.taxassistant.application.services.ProductService;
 import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
 import br.com.santospage.taxassistant.domain.models.Product;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,9 @@ public class ProductController {
 
     // Search product by ID
     @GetMapping(params = {"company", "id"})
-    public ResponseEntity<Product> getById(@RequestParam String company, @RequestParam String id) {
+    public ResponseEntity<Product> getById(
+            @Parameter(description = "Company code") @RequestParam String company,
+            @Parameter(description = "Product ID") @RequestParam String id) {
         try {
             Product product = service.findByFilialAndId(company, id);
             return ResponseEntity.ok(product);

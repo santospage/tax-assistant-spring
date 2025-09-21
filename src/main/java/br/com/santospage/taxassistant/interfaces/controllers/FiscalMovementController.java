@@ -3,6 +3,7 @@ package br.com.santospage.taxassistant.interfaces.controllers;
 import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
 import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.FiscalMovement;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,8 @@ public class FiscalMovementController {
 
     // Search /api/fiscal-movements/F2D123456
     @GetMapping("/{id}")
-    public ResponseEntity<FiscalMovement> getById(@PathVariable String id) {
+    public ResponseEntity<FiscalMovement> getById(
+            @Parameter(description = "Fiscal movement ID") @PathVariable String id) {
         try {
             FiscalMovement fm = service.findById(id);
             return ResponseEntity.ok(fm);
@@ -47,10 +49,11 @@ public class FiscalMovementController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-
+    
     // Search for tableCode (ex: /api/fiscal-movements?table=SD2)
     @GetMapping("/table/{table}")
-    public ResponseEntity<List<FiscalMovement>> getByTable(@PathVariable String table) {
+    public ResponseEntity<List<FiscalMovement>> getByTable(
+            @Parameter(description = "Fiscal movement table") @PathVariable String table) {
         try {
             List<FiscalMovement> results = service.findByTableMovement(table);
             return ResponseEntity.ok(results);

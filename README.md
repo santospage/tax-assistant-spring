@@ -11,9 +11,18 @@ parameter configurations.
 
 ## Tech Stack Used
 
-- `Java` v23.0.2
-- `Spring Boot` v3.5.0
-- `SQL Server` v2019 ou superior
+### Core
+
+- `Java` v21
+- `Spring Boot` v3.5.5
+
+### Database
+
+- `SQL Server` v2019 or higher
+- `MongoDB` (via Spring Data MongoDB)
+- `spring-jdbc` v6.2.7
+
+### Spring Starters
 
 - `spring-boot-starter-actuator`
 - `spring-boot-starter-data-jpa`
@@ -22,17 +31,27 @@ parameter configurations.
 - `spring-boot-starter-oauth2-client`
 - `spring-boot-starter-validation`
 - `spring-boot-starter-web-services`
-- `mssql-jdbc`
-- `lombok`
+- `spring-boot-devtools` (runtime, optional)
+- `springdoc-openapi-starter-webmvc-ui` v2.8.11
 
-- `spring-test` v6.2.7
+### Utilities
+
+- `mssql-jdbc` (runtime)
+- `lombok` (provided)
+- `org.jetbrains:annotations` v24.0.0
+
+### Testing
+
+- `spring-boot-starter-test` v3.5.5
+- `spring-security-test`
 - `mockito-core` v5.17.0
 - `junit-jupiter-api` v5.12.2
 - `mockito-junit-jupiter` v5.17.0
-- `spring-jdbc` v6.2.7
-- `spring-boot-test` v3.5.0
+
+### Spring Framework Core
+
 - `spring-web` v6.2.7
-- `spring-boot-autoconfigure` v3.5.0
+- `spring-boot-autoconfigure` v3.5.5
 - `spring-context` v6.2.7
 
 ## Installation
@@ -135,6 +154,21 @@ The API exposes the following endpoints under the base URL http://localhost:8080
 - `GET /api/customers`
 - `GET /api/customers?company={company}&id={id}`
 
+**Query Parameters:**
+
+| Parameter | Type   | Description  | Required |
+|-----------|--------|--------------|----------|
+| company   | string | Company code | Yes      |
+| id        | string | Customer ID  | Yes      |
+
+**Responses:**
+
+200 OK:
+Customer found. Returns the customer object.
+
+404 Not Found:
+Customer not found. Returned when no customer exists for the given `company` and `id`.
+
 ### API Documentation (Swagger)
 
 ![Home](assets/customers.png)
@@ -143,7 +177,40 @@ The API exposes the following endpoints under the base URL http://localhost:8080
 
 - `GET /api/fiscal-movements`
 - `GET /api/fiscal-movements?company={company}&id={id}`
+
+Retrieve a fiscal movement by its ID.
+
+**Path Parameters:**
+
+| Parameter | Type   | Description        | Required |
+|-----------|--------|--------------------|----------|
+| id        | string | Fiscal movement ID | Yes      |
+
+**Responses:**
+
+200 OK:
+Fiscal movement found. Returns the object.
+
+404 Not Found:
+Fiscal movement not found. Returned when no fiscal movement exists for the given `id`.
+
 - `GET /api/fiscal-movements/table/{table}`
+
+Retrieve all fiscal movements for a specific table.
+
+**Path Parameters:**
+
+| Parameter | Type   | Description     | Required |
+|-----------|--------|-----------------|----------|
+| table     | string | Table code/name | Yes      |
+
+**Responses:**
+
+200 OK:
+Fiscal movement found. Returns the object.
+
+404 Not Found:
+Fiscal movement not found. Returned when no fiscal movements exists for the given `table`.
 
 ### API Documentation (Swagger)
 
@@ -153,6 +220,21 @@ The API exposes the following endpoints under the base URL http://localhost:8080
 
 - `GET /api/products`
 - `GET /api/products?company={company}&id={id}`
+
+**Query Parameters:**
+
+| Parameter | Type   | Description  | Required |
+|-----------|--------|--------------|----------|
+| company   | string | Company code | Yes      |
+| id        | string | Product ID   | Yes      |
+
+**Responses:**
+
+200 OK:
+Product found. Returns the product object.
+
+404 Not Found:
+Product not found. Returned when no product exists for the given `company` and `id`.
 
 ### API Documentation (Swagger)
 

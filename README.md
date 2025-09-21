@@ -48,42 +48,34 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │               └── santospage
 │   │                   └── taxassistant
 │   │                       ├── application
-│   │                       │   ├── services
-│   │                       │   │   ├── CustomerService.java
-│   │                       │   │   ├── FiscalMovementsService.java
-│   │                       │   │   └── ProductService.java
-│   │                       │   └── usecases
+│   │                       │   └── services
+│   │                       │       ├── CustomerService.java
+│   │                       │       ├── FiscalMovementsService.java
+│   │                       │       └── ProductService.java
 │   │                       ├── domain
+│   │                       │   ├── enums
+│   │                       │   │   └── CustomerType
+│   │                       │   ├── exceptions
+│   │                       │   │   ├── CustomerNotFoundException.java
+│   │                       │   │   ├── FiscalMovementNotFoundException.java
+│   │                       │   │   └── ProductNotFoundException.java
 │   │                       │   ├── models
 │   │                       │   │   ├── Customer.java
 │   │                       │   │   ├── FiscalMovement.java
 │   │                       │   │   └── Product.java
-│   │                       │   ├── enums
-│   │                       │   ├── exceptions
 │   │                       │   └── repositories
 │   │                       │       ├── CustomerRepository.java
 │   │                       │       ├── FiscalMovementRepository.java
 │   │                       │       └── ProductRepository.java
 │   │                       ├── infrastructure
-│   │                       │   ├── persistence
-│   │                       │   │   ├── CustomerRepositoryImpl.java
-│   │                       │   │   ├── CustomerRowMapper.java
-│   │                       │   │   ├── FiscalMovementRepositoryImpl.java
-│   │                       │   │   ├── FiscalMovementRowMapper.java
-│   │                       │   │   ├── ProductRepositoryImpl.java
-│   │                       │   │   └── ProductRowMapper.java
-│   │                       │   ├── security
 │   │                       │   ├── external
-│   │                       │   └── ia
+│   │                       │   ├── ia
+│   │                       │   └── security
 │   │                       ├── interfaces
-│   │                       │   ├── controllers
-│   │                       │   │   ├── CustomerController.java
-│   │                       │   │   ├── FiscalMovementController.java
-│   │                       │   │   └── ProductController.java
-│   │                       │   └── dtos
-│   │                       │       ├── CustomerDTO.java
-│   │                       │       ├── FiscalMovementDTO.java
-│   │                       │       └── ProductDTO.java
+│   │                       │   └── controllers
+│   │                       │       ├── CustomerController.java
+│   │                       │       ├── FiscalMovementController.java
+│   │                       │       └── ProductController.java
 │   │                       └── TaxAssistantApplication.java
 ├── test
 │   └── java
@@ -92,32 +84,24 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │               └── santospage
 │                   └── taxassistant
 │                       ├── application
-│                       │   ├── services
-│                       │   │   ├── CustomerServiceTest.java
-│                       │   │   ├── FiscalMovementsServiceTest.java
-│                       │   │   └── ProductServiceTest.java
-│                       │   └── usecases
+│                       │   └── services
+│                       │       ├── CustomerServiceTest.java
+│                       │       ├── FiscalMovementsServiceTest.java
+│                       │       └── ProductServiceTest.java
 │                       ├── domain
-│                       │   ├── entities
 │                       │   ├── enums
 │                       │   ├── exceptions
+│                       │   ├── models
 │                       │   └── repositories
 │                       ├── infrastructure
-│                       │   ├── database
-│                       │   │   ├── CustomerRepositoryImplTest.java
-│                       │   │   ├── CustomerRowMapperTest.java
-│                       │   │   ├── FiscalMovementRepositoryImplTest.java
-│                       │   │   ├── FiscalMovementRowMapperTest.java
-│                       │   │   ├── ProductRepositoryImplTest.java
-│                       │   │   └── ProductRowMapperTest.java
 │                       │   ├── external
-│                       │   └── ia
+│                       │   ├── ia
+│                       │   └── security
 │                       ├── interfaces
-│                       │   ├── controllers
-│                       │   │   ├── CustomerControllerTest.java
-│                       │   │   ├── FiscalMovementControllerTest.java
-│                       │   │   └── ProductControllerTest.java
-│                       │   └── dtos
+│                       │   └── controllers
+│                       │       ├── CustomerControllerTest.java
+│                       │       ├── FiscalMovementControllerTest.java
+│                       │       └── ProductControllerTest.java
 │                       └── TaxAssistantApplicationTest.java
 ├── assets
 │   ├── home.png
@@ -149,7 +133,7 @@ The API exposes the following endpoints under the base URL http://localhost:8080
 `/customers`
 
 - `GET /api/customers`
-- `GET /api/customers/{id}`
+- `GET /api/customers?company={company}&id={id}`
 
 ### API Documentation (Swagger)
 
@@ -158,7 +142,7 @@ The API exposes the following endpoints under the base URL http://localhost:8080
 `/fiscal-movements`
 
 - `GET /api/fiscal-movements`
-- `GET /api/fiscal-movements/{id}`
+- `GET /api/fiscal-movements?company={company}&id={id}`
 - `GET /api/fiscal-movements/table/{table}`
 
 ### API Documentation (Swagger)
@@ -168,7 +152,7 @@ The API exposes the following endpoints under the base URL http://localhost:8080
 `/products`
 
 - `GET /api/products`
-- `GET /api/products/{id}`
+- `GET /api/products?company={company}&id={id}`
 
 ### API Documentation (Swagger)
 

@@ -70,7 +70,9 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   └── services
 │   │                       │       ├── CustomerService.java
 │   │                       │       ├── FiscalMovementsService.java
-│   │                       │       └── ProductService.java
+│   │                       │       ├── ProductService.java
+│   │                       │       └── mongo
+│   │                       │           └── UserService.java
 │   │                       ├── domain
 │   │                       │   ├── enums
 │   │                       │   │   └── CustomerType
@@ -81,11 +83,15 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   ├── models
 │   │                       │   │   ├── Customer.java
 │   │                       │   │   ├── FiscalMovement.java
-│   │                       │   │   └── Product.java
+│   │                       │   │   ├── Product.java
+│   │                       │       └── mongo
+│   │                       │           └── User.java
 │   │                       │   └── repositories
 │   │                       │       ├── CustomerRepository.java
 │   │                       │       ├── FiscalMovementRepository.java
-│   │                       │       └── ProductRepository.java
+│   │                       │       ├── ProductRepository.java
+│   │                       │       └── mongo
+│   │                       │           └── UserRepository.java
 │   │                       ├── infrastructure
 │   │                       │   ├── external
 │   │                       │   ├── ia
@@ -94,7 +100,9 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   └── controllers
 │   │                       │       ├── CustomerController.java
 │   │                       │       ├── FiscalMovementController.java
-│   │                       │       └── ProductController.java
+│   │                       │       ├── ProductController.java
+│   │                       │       └── mongo
+│   │                       │           └── UserController.java
 │   │                       └── TaxAssistantApplication.java
 ├── test
 │   └── java

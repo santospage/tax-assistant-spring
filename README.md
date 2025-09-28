@@ -72,20 +72,24 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── FiscalMovementsService.java
 │   │                       │       ├── ProductService.java
 │   │                       │       └── mongo
+│   │                       │           ├── CustomUserDetailsService.java
 │   │                       │           └── UserService.java
 │   │                       ├── domain
 │   │                       │   ├── enums
-│   │                       │   │   └── CustomerType
+│   │                       │       ├── UserRole.java
+│   │                       │   │   └── CustomerType.java
 │   │                       │   ├── exceptions
 │   │                       │   │   ├── CustomerNotFoundException.java
 │   │                       │   │   ├── FiscalMovementNotFoundException.java
-│   │                       │   │   └── ProductNotFoundException.java
+│   │                       │   │   ├── ProductNotFoundException.java
+│   │                       │   │   ├── UserAlreadyExistsException.java
+│   │                       │   │   └── UserNotFoundException.java
 │   │                       │   ├── models
 │   │                       │   │   ├── Customer.java
 │   │                       │   │   ├── FiscalMovement.java
 │   │                       │   │   ├── Product.java
-│   │                       │       └── mongo
-│   │                       │           └── User.java
+│   │                       │   │   └── mongo
+│   │                       │   │       └── User.java
 │   │                       │   └── repositories
 │   │                       │       ├── CustomerRepository.java
 │   │                       │       ├── FiscalMovementRepository.java
@@ -96,8 +100,12 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   ├── external
 │   │                       │   ├── ia
 │   │                       │   └── security
+│   │                       │       ├── JwtAuthenticationFilter.java
+│   │                       │       ├── JwtTokenProvider.java
+│   │                       │       └── SecurityConfig.java
 │   │                       ├── interfaces
 │   │                       │   └── controllers
+│   │                       │       ├── AuthController.java
 │   │                       │       ├── CustomerController.java
 │   │                       │       ├── FiscalMovementController.java
 │   │                       │       ├── ProductController.java
@@ -112,24 +120,24 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                   └── taxassistant
 │                       ├── application
 │                       │   └── services
+│                       │       ├── mongo
+│                       │       │   └── UserServiceTest.java
 │                       │       ├── CustomerServiceTest.java
 │                       │       ├── FiscalMovementsServiceTest.java
 │                       │       └── ProductServiceTest.java
-│                       ├── domain
-│                       │   ├── enums
-│                       │   ├── exceptions
-│                       │   ├── models
-│                       │   └── repositories
 │                       ├── infrastructure
 │                       │   ├── external
 │                       │   ├── ia
 │                       │   └── security
-│                       ├── interfaces
-│                       │   └── controllers
-│                       │       ├── CustomerControllerTest.java
-│                       │       ├── FiscalMovementControllerTest.java
-│                       │       └── ProductControllerTest.java
-│                       └── TaxAssistantApplicationTest.java
+│                       │       └── JwtTokenProviderTest.java
+│                       └── interfaces
+│                          └── controllers
+│                               ├── mongo
+│                               │   └── UserControllerTest.java
+│                               ├── AuthControllerTest.java
+│                               ├── CustomerControllerTest.java
+│                               ├── FiscalMovementControllerTest.java
+│                               └── ProductControllerTest.java
 ├── assets
 │   ├── home.png
 │   ├── customers.png

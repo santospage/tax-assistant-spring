@@ -5,6 +5,7 @@ import br.com.santospage.taxassistant.domain.exceptions.UserAlreadyExistsExcepti
 import br.com.santospage.taxassistant.domain.exceptions.UserNotFoundException;
 import br.com.santospage.taxassistant.domain.models.mongo.User;
 import br.com.santospage.taxassistant.domain.repositories.mongo.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,23 +14,24 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository repository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User create(String user, String fullName, String password,
-                       String salpass, String email, UserRole role) {
+                       String email, UserRole role) {
 
-        if (repository.existsByUser(user)) {
+        if (repository.existsByUsername(user)) {
             throw new UserAlreadyExistsException(user);
         }
-        
+
         User newUser = new User();
-        newUser.setUser(user);
+        newUser.setUserName(user);
         newUser.setFullName(fullName);
-        newUser.setPassword(password); // after to do BCrypt
-        newUser.setSalpass(salpass);
+        newUser.setPassword(passwordEncoder.encode(password));
         newUser.setEmail(email);
         newUser.setRole(role);
 
@@ -41,17 +43,20 @@ public class UserService {
     }
 
     public User getUserByUsername(String user) {
-        return repository.findByUser(user)
+        return repository.findByUsername(user)
                 .orElseThrow(() -> new UserNotFoundException(user));
     }
 
     public User updateUser(String username, User updatedUser) {
-        User existingUser = repository.findByUser(username)
+        User existingUser = repository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         existingUser.setFullName(updatedUser.getFullName());
-        existingUser.setPassword(updatedUser.getPassword());
-        existingUser.setSalpass(updatedUser.getSalpass());
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setRole(updatedUser.getRole());
 
@@ -59,7 +64,7 @@ public class UserService {
     }
 
     public void deleteUser(String username) {
-        User existingUser = repository.findByUser(username)
+        User existingUser = repository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         repository.delete(existingUser);
     }

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(UserController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
@@ -38,29 +38,28 @@ class UserControllerTest {
     @Test
     void shouldCreateUser_Success() throws Exception {
         User userRequest = new User();
-        userRequest.setUser("testuser");
+        userRequest.setUserName("testuser");
         userRequest.setFullName("Test User");
         userRequest.setPassword("123456");
-        userRequest.setSalpass("sal123");
         userRequest.setEmail("test@example.com");
         userRequest.setRole(UserRole.ADMIN);
 
         User createdUser = new User();
-        createdUser.setUser(userRequest.getUser());
+        createdUser.setUserName(userRequest.getUserName());
         createdUser.setFullName(userRequest.getFullName());
         createdUser.setEmail(userRequest.getEmail());
         createdUser.setRole(userRequest.getRole());
 
         // Mock service to return the created user
         when(service.create(
-                anyString(), anyString(), anyString(), anyString(), anyString(), any(UserRole.class)
+                anyString(), anyString(), anyString(), anyString(), any(UserRole.class)
         )).thenReturn(createdUser);
 
         mockMvc.perform(post("/api/users")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(userRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user").value("testuser"))
+                .andExpect(jsonPath("$.userName").value("testuser"))
                 .andExpect(jsonPath("$.fullName").value("Test User"))
                 .andExpect(jsonPath("$.email").value("test@example.com"))
                 .andExpect(jsonPath("$.role").value("ADMIN"));
@@ -69,16 +68,15 @@ class UserControllerTest {
     @Test
     void shouldCreateUser_UserAlreadyExists() throws Exception {
         User userRequest = new User();
-        userRequest.setUser("testuser");
+        userRequest.setUserName("testuser");
         userRequest.setFullName("Test User");
         userRequest.setPassword("123456");
-        userRequest.setSalpass("sal123");
         userRequest.setEmail("test@example.com");
         userRequest.setRole(UserRole.ADMIN);
 
         // Mock service to throw UserAlreadyExistsException
         when(service.create(
-                anyString(), anyString(), anyString(), anyString(), anyString(), any(UserRole.class)
+                anyString(), anyString(), anyString(), anyString(), any(UserRole.class)
         )).thenThrow(new UserAlreadyExistsException("User already exists"));
 
         mockMvc.perform(post("/api/users")
@@ -90,7 +88,7 @@ class UserControllerTest {
     @Test
     void updateUser_success() throws Exception {
         User updated = new User();
-        updated.setUser("user01");
+        updated.setUserName("user01");
         updated.setFullName("User01");
         updated.setEmail("user01@example.com");
 
@@ -108,7 +106,7 @@ class UserControllerTest {
     @Test
     void updateUser_notFound() throws Exception {
         User updated = new User();
-        updated.setUser("user02");
+        updated.setUserName("user02");
         updated.setEmail("user02@example.com");
 
         Mockito.when(service.updateUser(eq("user02"), any(User.class)))
@@ -143,12 +141,12 @@ class UserControllerTest {
     @Test
     void getAllUsers_success() throws Exception {
         User u1 = new User();
-        u1.setUser("user01");
+        u1.setUserName("user01");
         u1.setFullName("User 01");
         u1.setEmail("user01@example.com");
 
         User u2 = new User();
-        u2.setUser("user02");
+        u2.setUserName("user02");
         u2.setFullName("User 02");
         u2.setEmail("user02@example.com");
 
@@ -159,14 +157,14 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].user").value("user01"))
-                .andExpect(jsonPath("$[1].user").value("user02"));
+                .andExpect(jsonPath("$[0].userName").value("user01"))
+                .andExpect(jsonPath("$[1].userName").value("user02"));
     }
 
     @Test
     void getUserByUsername_success() throws Exception {
         User u = new User();
-        u.setUser("user01");
+        u.setUserName("user01");
         u.setFullName("User 01");
         u.setEmail("user01@example.com");
 
@@ -174,7 +172,7 @@ class UserControllerTest {
 
         mockMvc.perform(get("/api/users/user01"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user").value("user01"))
+                .andExpect(jsonPath("$.userName").value("user01"))
                 .andExpect(jsonPath("$.fullName").value("User 01"))
                 .andExpect(jsonPath("$.email").value("user01@example.com"));
     }

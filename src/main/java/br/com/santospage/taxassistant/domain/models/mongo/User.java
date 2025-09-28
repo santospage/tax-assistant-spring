@@ -3,15 +3,16 @@ package br.com.santospage.taxassistant.domain.models.mongo;
 import br.com.santospage.taxassistant.domain.enums.UserRole;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "users")
 public class User {
     @Id
     private String id;
-    private String user;
+    @Field("user")
+    private String userName;
     private String fullName;
     private String password;
-    private String salpass;
     private String email;
     private UserRole role;
 
@@ -23,12 +24,12 @@ public class User {
         this.id = id;
     }
 
-    public String getUser() {
-        return user;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUserName(String user) {
+        this.userName = user;
     }
 
     public String getFullName() {
@@ -46,15 +47,7 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getSalpass() {
-        return salpass;
-    }
-
-    public void setSalpass(String salpass) {
-        this.salpass = salpass;
-    }
-
+    
     public String getEmail() {
         return email;
     }

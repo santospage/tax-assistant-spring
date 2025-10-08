@@ -70,6 +70,7 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   └── services
 │   │                       │       ├── CustomerService.java
 │   │                       │       ├── FiscalMovementsService.java
+│   │                       │       ├── SalesMovementsService.java
 │   │                       │       ├── ProductService.java
 │   │                       │       └── mongo
 │   │                       │           ├── CustomUserDetailsService.java
@@ -81,18 +82,21 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   ├── exceptions
 │   │                       │   │   ├── CustomerNotFoundException.java
 │   │                       │   │   ├── FiscalMovementNotFoundException.java
+│   │                       │   │   ├── SalesMovementNotFoundException.java
 │   │                       │   │   ├── ProductNotFoundException.java
 │   │                       │   │   ├── UserAlreadyExistsException.java
 │   │                       │   │   └── UserNotFoundException.java
 │   │                       │   ├── models
 │   │                       │   │   ├── Customer.java
 │   │                       │   │   ├── FiscalMovement.java
+│   │                       │   │   ├── SalesMovement.java
 │   │                       │   │   ├── Product.java
 │   │                       │   │   └── mongo
 │   │                       │   │       └── User.java
 │   │                       │   └── repositories
 │   │                       │       ├── CustomerRepository.java
 │   │                       │       ├── FiscalMovementRepository.java
+│   │                       │       ├── SalesMovementRepository.java
 │   │                       │       ├── ProductRepository.java
 │   │                       │       └── mongo
 │   │                       │           └── UserRepository.java
@@ -108,6 +112,7 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── AuthController.java
 │   │                       │       ├── CustomerController.java
 │   │                       │       ├── FiscalMovementController.java
+│   │                       │       ├── SalesMovementController.java
 │   │                       │       ├── ProductController.java
 │   │                       │       └── mongo
 │   │                       │           └── UserController.java
@@ -124,6 +129,7 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                       │       │   └── UserServiceTest.java
 │                       │       ├── CustomerServiceTest.java
 │                       │       ├── FiscalMovementsServiceTest.java
+│                       │       ├── SalesMovementsServiceTest.java
 │                       │       └── ProductServiceTest.java
 │                       ├── infrastructure
 │                       │   ├── external
@@ -137,16 +143,29 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                               ├── AuthControllerTest.java
 │                               ├── CustomerControllerTest.java
 │                               ├── FiscalMovementControllerTest.java
+│                               ├── SalesMovementControllerTest.java
 │                               └── ProductControllerTest.java
 ├── assets
+│   ├── auth.png
 │   ├── home.png
+│   ├── home1.png
 │   ├── customers.png
 │   ├── movemets.png
+│   ├── movemets1.png
+│   ├── movemets2.png
+│   ├── sales.png
+│   ├── sales1.png
+│   ├── sales2.png
+│   ├── sales3.png
+│   ├── user.png
+│   ├── user1.png
+│   ├── user2.png
+│   ├── user3.png
+│   ├── user4.png
 │   └── products.png
 ├── .gitignore
 ├── .gitattributes
 ├── pom.xml
-├── README.md
 └── README.md
 
 ```
@@ -164,6 +183,7 @@ The API exposes the following endpoints under the base URL https://localhost:844
 ### API Documentation (Swagger)
 
 ![Home](assets/home.png)
+![Home](assets/home1.png)
 
 `/customers`
 
@@ -231,6 +251,8 @@ Fiscal movement not found. Returned when no fiscal movements exists for the give
 ### API Documentation (Swagger)
 
 ![Home](assets/movemets.png)
+![Home](assets/movements1.png)
+![Home](assets/movements2.png)
 
 `/products`
 
@@ -256,9 +278,196 @@ Product not found. Returned when no product exists for the given `company` and `
 
 ![Home](assets/products.png)
 
+`/sales-movements`
+
+- `GET /api/sales-movements`
+
+Returns all sales movements.
+
+Responses:
+
+* 200 OK: Returns a list of movements.
+* 404 Not Found: No movements found.
+
+---
+
+- `GET /api/sales-movements/{id}`
+
+Returns a specific sales movement by ID.
+
+Path Parameters:
+
+| Parameter | Type   | Description | Required |
+|-----------|--------|-------------|----------|
+| id        | string | Movement ID | Yes      |
+
+Responses:
+
+* 200 OK: Returns the movement object.
+* 404 Not Found: Movement not found.
+
+---
+
+- `GET /api/sales-movements/product/{productCode}`
+
+Returns all sales movements for a specific product.
+
+Path Parameters:
+
+| Parameter   | Type   | Description  | Required |
+|-------------|--------|--------------|----------|
+| productCode | string | Product code | Yes      |
+
+Responses:
+
+* 200 OK: Returns a list of movements for the product.
+* 404 Not Found: No movements found for the product.
+
+---
+
+- `GET /api/sales-movements/customer/{customerCode}`
+
+Returns all sales movements for a specific customer.
+
+Path Parameters:
+
+| Parameter    | Type   | Description   | Required |
+|--------------|--------|---------------|----------|
+| customerCode | string | Customer code | Yes      |
+
+Responses:
+
+* 200 OK: Returns a list of movements for the customer.
+* 404 Not Found: No movements found for the customer.
+
+---
+
+### Example Images (Swagger UI)
+
+![Home](assets/movemets.png)
+![Home](assets/movements1.png)
+![Home](assets/movements2.png)
+
+`/users`
+
+- `GET /api/users`
+
+Returns all users.
+
+Responses:
+
+* 200 OK: Returns a list of movements.
+* 404 Not Found: No movements found.
+
+---
+
+- `GET /api/users/{username}`
+
+Returns a specific user by username.
+
+Path Parameters:
+
+| Parameter | Type   | Description | Required |
+|-----------|--------|-------------|----------|
+| username  | string | Username    | Yes      |
+
+Responses:
+
+* 200 OK: Returns the movement object.
+* 404 Not Found: Movement not found.
+
+---
+
+- `POST /api/users/{username}`
+
+Creates a new user with the given username.
+
+Path Parameters:
+
+| Parameter | Type   | Description | Required |
+|-----------|--------|-------------|----------|
+| username  | string | Username    | Yes      |
+
+Responses:
+
+* 201 Created: User successfully created.
+* 400 Bad Request: Invalid data or user already exists.
+
+---
+
+- `Put /api/users/{username}`
+
+Updates an existing user by username.
+
+Path Parameters:
+
+| Parameter | Type   | Description | Required |
+|-----------|--------|-------------|----------|
+| username  | string | Username    | Yes      |
+
+Responses:
+
+* 200 OK: User successfully updated.
+* 404 Not Found: User not found.
+* 400 Bad Request: Invalid update data.
+
+---
+
+- `DELETE /api/users/{username}`
+
+Deletes a user by username.
+
+Path Parameters:
+
+| Parameter | Type   | Description | Required |
+|-----------|--------|-------------|----------|
+| username  | string | Username    | Yes      |
+
+Responses:
+
+* 200 OK: User successfully deleted.
+* 404 Not Found: User not found.
+
+---
+
+### Example Images (Swagger UI)
+
+![Home](assets/user.png)
+![Home](assets/user1.png)
+![Home](assets/user2.png)
+![Home](assets/user3.png)
+![Home](assets/user4.png)
+
+`/login`
+
+- `POST /api/auth/login`
+
+Authenticate a user and obtain a JWT token.
+
+Path Parameters:
+
+| Parameter | Type   | Description   | Required |
+|-----------|--------|---------------|----------|
+| username  | string | Username      | Yes      |
+| password  | string | User password | Yes      |
+
+Responses:
+
+* 200 OK: Authentication successful, returns JWT token.
+* 401 Unauthorized: Invalid username or password.
+
+---
+
+### Example Images (Swagger UI)
+
+![Home](assets/auth.png)
+
+---
+
 ### DataBase
 
-This project uses SQL Server and MongoDB as database management systems.
+- **SQL Server**: Used for fiscal movements, products, and transactional data.
+- **MongoDB**: Used for user management and authentication (login, roles, sessions).
 
 ## Roadmap
 

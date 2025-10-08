@@ -34,11 +34,11 @@ public class SalesMovement {
     @Column(name = "D2_LOJA", nullable = true)
     private String customerUnit = "";
 
-    public String getFilial() {
+    public String getCompanyCode() {
         return filial;
     }
 
-    public void setFilial(String filial) {
+    public void setCompanyCode(String filial) {
         this.filial = filial;
     }
 

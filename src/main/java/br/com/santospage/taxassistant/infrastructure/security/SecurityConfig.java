@@ -46,20 +46,26 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(
-                                (request, response
-                                        , authException) ->
-                                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                        .authenticationEntryPoint((request, response
+                                                          , authException) ->
+                                                          response.sendError(
+                                                                  HttpServletResponse.SC_UNAUTHORIZED
+                                                                  , "Unauthorized"
+                                                          )
                         )
                 );
 
         return http.build();
     }
-
 }

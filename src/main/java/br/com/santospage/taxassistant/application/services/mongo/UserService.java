@@ -24,7 +24,7 @@ public class UserService {
     public User create(String user, String fullName, String password,
                        String email, UserRole role) {
 
-        if (repository.existsByUsername(user)) {
+        if (repository.existsByUserName(user)) {
             throw new UserAlreadyExistsException(user);
         }
 
@@ -43,12 +43,12 @@ public class UserService {
     }
 
     public User getUserByUsername(String user) {
-        return repository.findByUsername(user)
+        return repository.findByUserName(user)
                 .orElseThrow(() -> new UserNotFoundException(user));
     }
 
     public User updateUser(String username, User updatedUser) {
-        User existingUser = repository.findByUsername(username)
+        User existingUser = repository.findByUserName(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         existingUser.setFullName(updatedUser.getFullName());
@@ -64,7 +64,7 @@ public class UserService {
     }
 
     public void deleteUser(String username) {
-        User existingUser = repository.findByUsername(username)
+        User existingUser = repository.findByUserName(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         repository.delete(existingUser);
     }

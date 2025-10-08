@@ -34,3 +34,6 @@ build/
 
 # Arquivos sensíveis
 src/main/resources/application.properties
+
+# Ignore keystore files
+*.p12

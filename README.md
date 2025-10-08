@@ -59,6 +59,9 @@ parameter configurations.
 git clone https://github.com/santospage/tax-assistant-spring.git
 
 ```
+├── .github
+│   └── workflows
+│       └── unit-tests.yaml
 ├── src
 │   ├── main
 │   │   └── java

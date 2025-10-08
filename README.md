@@ -344,9 +344,10 @@ Responses:
 
 ### Example Images (Swagger UI)
 
-![Home](assets/movemets.png)
-![Home](assets/movements1.png)
-![Home](assets/movements2.png)
+![Home](assets/sales.png)
+![Home](assets/sales1.png)
+![Home](assets/sales2.png)
+![Home](assets/sales3.png)
 
 `/users`
 
@@ -468,9 +469,3 @@ Responses:
 
 - **SQL Server**: Used for fiscal movements, products, and transactional data.
 - **MongoDB**: Used for user management and authentication (login, roles, sessions).
-
-## Roadmap
-
-- Authentication
-- Error handling
-- Validations

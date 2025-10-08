@@ -159,7 +159,7 @@ Follow the steps below to set up the project on your local machine.
 
 ### Endpoints
 
-The API exposes the following endpoints under the base URL http://localhost:8080/api:
+The API exposes the following endpoints under the base URL https://localhost:8443/api:
 
 ### API Documentation (Swagger)
 

@@ -40,10 +40,10 @@ class UserServiceTest {
     void createUser_success() {
         User user = new User();
         user.setUserName("user01");
-        
+
         when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPassword");
 
-        when(repository.existsByUsername("user01")).thenReturn(false);
+        when(repository.existsByUserName("user01")).thenReturn(false);
         when(repository.save(any(User.class))).thenReturn(user);
 
         User result = service.create(
@@ -57,7 +57,7 @@ class UserServiceTest {
 
     @Test
     void createUser_alreadyExists() {
-        when(repository.existsByUsername("user01")).thenReturn(true);
+        when(repository.existsByUserName("user01")).thenReturn(true);
 
         assertThrows(
                 UserAlreadyExistsException.class,
@@ -87,7 +87,7 @@ class UserServiceTest {
         User u = new User();
         u.setUserName("user01");
 
-        when(repository.findByUsername("user01")).thenReturn(Optional.of(u));
+        when(repository.findByUserName("user01")).thenReturn(Optional.of(u));
 
         User result = service.getUserByUsername("user01");
 
@@ -96,7 +96,7 @@ class UserServiceTest {
 
     @Test
     void getUserByUsername_notFound() {
-        when(repository.findByUsername("user01")).thenReturn(Optional.empty());
+        when(repository.findByUserName("user01")).thenReturn(Optional.empty());
 
         assertThrows(
                 UserNotFoundException.class,
@@ -113,7 +113,7 @@ class UserServiceTest {
         updated.setFullName("Novo Nome");
         updated.setEmail("novo@example.com");
 
-        when(repository.findByUsername("user01")).thenReturn(Optional.of(existing));
+        when(repository.findByUserName("user01")).thenReturn(Optional.of(existing));
         when(repository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
 
         User result = service.updateUser("user01", updated);
@@ -125,7 +125,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_notFound() {
-        when(repository.findByUsername("user01")).thenReturn(Optional.empty());
+        when(repository.findByUserName("user01")).thenReturn(Optional.empty());
 
         assertThrows(
                 UserNotFoundException.class,
@@ -138,7 +138,7 @@ class UserServiceTest {
         User existing = new User();
         existing.setUserName("user01");
 
-        when(repository.findByUsername("user01")).thenReturn(Optional.of(existing));
+        when(repository.findByUserName("user01")).thenReturn(Optional.of(existing));
 
         service.deleteUser("user01");
 
@@ -147,7 +147,7 @@ class UserServiceTest {
 
     @Test
     void deleteUser_notFound() {
-        when(repository.findByUsername("user01")).thenReturn(Optional.empty());
+        when(repository.findByUserName("user01")).thenReturn(Optional.empty());
 
         assertThrows(
                 UserNotFoundException.class,

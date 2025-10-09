@@ -1,6 +1,6 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
-import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
+import br.com.santospage.taxassistant.application.services.FiscalMovementService;
 import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.FiscalMovement;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,9 +20,9 @@ import java.util.List;
 @Tag(name = "fiscal-movements", description = "Endpoints for managing fiscal-movements")
 public class FiscalMovementController {
 
-    private final FiscalMovementsService service;
+    private final FiscalMovementService service;
 
-    FiscalMovementController(FiscalMovementsService fiscalMovementService) {
+    FiscalMovementController(FiscalMovementService fiscalMovementService) {
         this.service = fiscalMovementService;
     }
 
@@ -49,7 +49,7 @@ public class FiscalMovementController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
-    
+
     // Search for tableCode (ex: /api/fiscal-movements?table=SD2)
     @GetMapping("/table/{table}")
     public ResponseEntity<List<FiscalMovement>> getByTable(

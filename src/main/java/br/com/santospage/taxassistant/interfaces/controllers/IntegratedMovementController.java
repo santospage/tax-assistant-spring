@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/integratedmovement")
+@RequestMapping("/api/integrated-movements")
 public class IntegratedMovementController {
 
     private final IntegratedMovementService service;

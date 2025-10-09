@@ -1,6 +1,6 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
-import br.com.santospage.taxassistant.application.services.SalesMovementsService;
+import br.com.santospage.taxassistant.application.services.SalesMovementService;
 import br.com.santospage.taxassistant.domain.exceptions.SalesMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.SalesMovement;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SalesMovementController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class SalesMovementsControllerTest {
+public class SalesMovementControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private SalesMovementsService service;
+    private SalesMovementService service;
 
     @Test
     void shouldGetByIdFound() throws Exception {

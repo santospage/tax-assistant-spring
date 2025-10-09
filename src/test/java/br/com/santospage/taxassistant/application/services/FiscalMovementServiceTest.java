@@ -17,13 +17,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FiscalMovementsServiceTest {
+class FiscalMovementServiceTest {
 
     @Mock
     private FiscalMovementRepository repository;
 
     @InjectMocks
-    private FiscalMovementsService service;
+    private FiscalMovementService service;
 
     @Test
     void shouldThrowWhenFiscalMovementNotExists() {

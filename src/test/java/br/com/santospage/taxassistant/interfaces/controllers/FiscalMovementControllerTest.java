@@ -1,6 +1,6 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
-import br.com.santospage.taxassistant.application.services.FiscalMovementsService;
+import br.com.santospage.taxassistant.application.services.FiscalMovementService;
 import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.FiscalMovement;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ public class FiscalMovementControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private FiscalMovementsService service;
+    private FiscalMovementService service;
 
     @Test
     void shouldGetByIdFound() throws Exception {

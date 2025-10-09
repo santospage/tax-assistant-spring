@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class FiscalMovementsService {
+public class FiscalMovementService {
 
     private final FiscalMovementRepository repository;
 
-    private FiscalMovementsService(FiscalMovementRepository repository) {
+    private FiscalMovementService(FiscalMovementRepository repository) {
         this.repository = repository;
     }
 

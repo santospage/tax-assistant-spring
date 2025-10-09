@@ -2,7 +2,7 @@ package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.exceptions.SalesMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.SalesMovement;
-import br.com.santospage.taxassistant.domain.repositories.SalesMovementsRepository;
+import br.com.santospage.taxassistant.domain.repositories.SalesMovementRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,12 +17,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SalesMovementsServiceTest {
+public class SalesMovementServiceTest {
     @Mock
-    private SalesMovementsRepository repository;
+    private SalesMovementRepository repository;
 
     @InjectMocks
-    private SalesMovementsService service;
+    private SalesMovementService service;
 
     @Test
     void shouldThrowWhenSalesMovementNotExists() {

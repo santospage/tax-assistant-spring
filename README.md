@@ -71,54 +71,57 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                   └── taxassistant
 │   │                       ├── application
 │   │                       │   └── services
+│   │                       │       ├── mongo
+│   │                       │       │   ├── CustomUserDetailsService.java
+│   │                       │       │   └── UserService.java
 │   │                       │       ├── CustomerService.java
-│   │                       │       ├── FiscalMovementsService.java
-│   │                       │       ├── SalesMovementsService.java
-│   │                       │       ├── ProductService.java
-│   │                       │       └── mongo
-│   │                       │           ├── CustomUserDetailsService.java
-│   │                       │           └── UserService.java
+│   │                       │       ├── FiscalMovementService.java
+│   │                       │       ├── IntegratedMovementService.java
+│   │                       │       ├── SalesMovementService.java
+│   │                       │       └── ProductService.java
 │   │                       ├── domain
 │   │                       │   ├── enums
-│   │                       │       ├── UserRole.java
+│   │                       │   │   ├── UserRole.java
 │   │                       │   │   └── CustomerType.java
 │   │                       │   ├── exceptions
 │   │                       │   │   ├── CustomerNotFoundException.java
 │   │                       │   │   ├── FiscalMovementNotFoundException.java
+│   │                       │   │   ├── IntegratedMovementNotFoundException.java
 │   │                       │   │   ├── SalesMovementNotFoundException.java
 │   │                       │   │   ├── ProductNotFoundException.java
 │   │                       │   │   ├── UserAlreadyExistsException.java
 │   │                       │   │   └── UserNotFoundException.java
 │   │                       │   ├── models
+│   │                       │   │   ├── mongo
+│   │                       │   │   │   └── User.java
 │   │                       │   │   ├── Customer.java
 │   │                       │   │   ├── FiscalMovement.java
+│   │                       │   │   ├── IntegratedMovement.java
 │   │                       │   │   ├── SalesMovement.java
-│   │                       │   │   ├── Product.java
-│   │                       │   │   └── mongo
-│   │                       │   │       └── User.java
+│   │                       │   │   └── Product.java
 │   │                       │   └── repositories
+│   │                       │       ├── mongo
+│   │                       │       │   └── UserRepository.java
 │   │                       │       ├── CustomerRepository.java
 │   │                       │       ├── FiscalMovementRepository.java
+│   │                       │       ├── IntegratedMovementRepository.java
 │   │                       │       ├── SalesMovementRepository.java
-│   │                       │       ├── ProductRepository.java
-│   │                       │       └── mongo
-│   │                       │           └── UserRepository.java
+│   │                       │       └── ProductRepository.java
 │   │                       ├── infrastructure
-│   │                       │   ├── external
-│   │                       │   ├── ia
 │   │                       │   └── security
 │   │                       │       ├── JwtAuthenticationFilter.java
 │   │                       │       ├── JwtTokenProvider.java
 │   │                       │       └── SecurityConfig.java
 │   │                       ├── interfaces
 │   │                       │   └── controllers
+│   │                       │       ├── mongo
+│   │                       │       │   └── UserController.java
 │   │                       │       ├── AuthController.java
 │   │                       │       ├── CustomerController.java
 │   │                       │       ├── FiscalMovementController.java
+│   │                       │       ├── IntegratedMovementController.java
 │   │                       │       ├── SalesMovementController.java
-│   │                       │       ├── ProductController.java
-│   │                       │       └── mongo
-│   │                       │           └── UserController.java
+│   │                       │       └── ProductController.java
 │   │                       └── TaxAssistantApplication.java
 ├── test
 │   └── java
@@ -131,12 +134,11 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                       │       ├── mongo
 │                       │       │   └── UserServiceTest.java
 │                       │       ├── CustomerServiceTest.java
-│                       │       ├── FiscalMovementsServiceTest.java
-│                       │       ├── SalesMovementsServiceTest.java
+│                       │       ├── FiscalMovementServiceTest.java
+│                       │       ├── IntegratedMovementServiceTest.java
+│                       │       ├── SalesMovementServiceTest.java
 │                       │       └── ProductServiceTest.java
 │                       ├── infrastructure
-│                       │   ├── external
-│                       │   ├── ia
 │                       │   └── security
 │                       │       └── JwtTokenProviderTest.java
 │                       └── interfaces
@@ -146,6 +148,7 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                               ├── AuthControllerTest.java
 │                               ├── CustomerControllerTest.java
 │                               ├── FiscalMovementControllerTest.java
+│                               ├── IntegratedMovementControllerTest.java
 │                               ├── SalesMovementControllerTest.java
 │                               └── ProductControllerTest.java
 ├── assets
@@ -156,6 +159,8 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   ├── movemets.png
 │   ├── movemets1.png
 │   ├── movemets2.png
+│   ├── integrated.png
+│   ├── integrated1.png
 │   ├── sales.png
 │   ├── sales1.png
 │   ├── sales2.png
@@ -249,7 +254,7 @@ Retrieve all fiscal movements for a specific table.
 Fiscal movement found. Returns the object.
 
 404 Not Found:
-Fiscal movement not found. Returned when no fiscal movements exists for the given `table`.
+Fiscal movement not found. Returned when no fiscal movements exist for the given `table`.
 
 ### API Documentation (Swagger)
 
@@ -351,6 +356,39 @@ Responses:
 ![Home](assets/sales1.png)
 ![Home](assets/sales2.png)
 ![Home](assets/sales3.png)
+
+`/integrated-movements`
+
+- `GET /api/integrated-movements`
+
+Returns all integrated movements.
+
+Responses:
+
+* 200 OK: Returns a list of integrated movements.
+* 404 Not Found: No integrated movements found.
+
+---
+
+- `GET /api/integrated-movements/{company}`
+
+Returns a specific sales movement by Company.
+
+Path Parameters:
+
+| Parameter | Type   | Description | Required |
+|-----------|--------|-------------|----------|
+| Company   | string | Company ID  | Yes      |
+
+Responses:
+
+* 200 OK: Returns a list of integrated movements by company.
+* 404 Not Found: No integrated movements found.
+
+### Example Images (Swagger UI)
+
+![Home](assets/integrated.png)
+![Home](assets/integrated1.png)
 
 `/users`
 

@@ -2,16 +2,16 @@ package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.exceptions.SalesMovementNotFoundException;
 import br.com.santospage.taxassistant.domain.models.SalesMovement;
-import br.com.santospage.taxassistant.domain.repositories.SalesMovementsRepository;
+import br.com.santospage.taxassistant.domain.repositories.SalesMovementRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class SalesMovementsService {
-    private final SalesMovementsRepository repository;
+public class SalesMovementService {
+    private final SalesMovementRepository repository;
 
-    public SalesMovementsService(SalesMovementsRepository repository) {
+    public SalesMovementService(SalesMovementRepository repository) {
         this.repository = repository;
     }
 

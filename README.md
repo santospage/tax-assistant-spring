@@ -159,6 +159,8 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   ├── movemets.png
 │   ├── movemets1.png
 │   ├── movemets2.png
+│   ├── integrated.png
+│   ├── integrated1.png
 │   ├── sales.png
 │   ├── sales1.png
 │   ├── sales2.png

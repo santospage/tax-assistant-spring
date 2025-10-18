@@ -1,7 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
-import br.com.santospage.taxassistant.domain.models.Customer;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.CustomerModel;
 import br.com.santospage.taxassistant.domain.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,17 @@ public class CustomerService {
         this.repository = repository;
     }
 
-    public List<Customer> findAll() {
-        return repository.findAll();
+    public List<CustomerModel> findAll() {
+        return repository.findAll()
+                .stream()
+                .filter(CustomerModel::isActive)
+                .toList();
     }
 
-    public Customer findByFilialAndId(String filial, String id) {
-        return repository.findByFilialAndId(filial, id)
-                .orElseThrow(() -> new CustomerNotFoundException(
-                        "Customer not found with ID: " + filial + id));
+    public CustomerModel findByCompanyAndId(String company, String id) {
+        return repository.findByCompanyAndId(company, id)
+                .filter(CustomerModel::isActive)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found: "
+                                                                 + id + company));
     }
 }

@@ -1,7 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
-import br.com.santospage.taxassistant.domain.models.Product;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.ProductModel;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +16,17 @@ public class ProductService {
         this.repository = repository;
     }
 
-    public List<Product> findAll() {
-        return repository.findAll();
+    public List<ProductModel> findAll() {
+        return repository.findAll()
+                .stream()
+                .filter(ProductModel::isActive)
+                .toList();
     }
 
-    public Product findByFilialAndId(String filial, String id) {
-        return repository.findByFilialAndId(filial, id)
-                .orElseThrow(() -> new ProductNotFoundException(
-                        "Product not found with ID: " + filial + id));
+    public ProductModel findByCompanyAndId(String company, String id) {
+        return repository.findByCompanyAndId(company, id)
+                .filter(ProductModel::isActive)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found: "
+                                                                 + id + company));
     }
 }

@@ -1,9 +1,12 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.CustomerService;
-import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
-import br.com.santospage.taxassistant.domain.models.Customer;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.CustomerModel;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(CustomerController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class CustomerControllerTest {
+class CustomerModelControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,29 +34,37 @@ public class CustomerControllerTest {
     @MockBean
     private CustomerService service;
 
+    @InjectMocks
+    private CustomerController customerController;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
     void shouldGetByIdFound() throws Exception {
-        Customer customer = new Customer();
-        customer.setCompany("01");
-        customer.setId("TEST001");
-        customer.setName("CUSTOMER TEST001");
-        customer.setTypeCustomer("F");
+        CustomerModel customer = mock(CustomerModel.class);
+        when(customer.getCompany()).thenReturn("01");
+        when(customer.getId()).thenReturn("000001");
+        when(customer.getName()).thenReturn("CUSTOMER 001");
+        when(customer.getTypeCustomer()).thenReturn("S");
 
-        when(service.findByFilialAndId("01", "TEST001")).thenReturn(customer);
+        when(service.findByCompanyAndId("01", "000001")).thenReturn(customer);
 
         mockMvc.perform(get("/api/customers")
                                 .param("company", "01")
-                                .param("id", "TEST001")
+                                .param("id", "000001")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("TEST001"))
-                .andExpect(jsonPath("$.name").value("CUSTOMER TEST001"));
+                .andExpect(jsonPath("$.id").value("000001"))
+                .andExpect(jsonPath("$.name").value("CUSTOMER 001"));
     }
 
     @Test
     void shouldGetByIdNotFound() throws Exception {
-        when(service.findByFilialAndId("01", "TEST999"))
-                .thenThrow(new CustomerNotFoundException(""));
+        when(service.findByCompanyAndId("01", "TEST999"))
+                .thenThrow(new ResourceNotFoundException("Customer not found: TEST999"));
 
         mockMvc.perform(get("/api/customers")
                                 .param("company", "01")
@@ -63,19 +75,19 @@ public class CustomerControllerTest {
 
     @Test
     void shouldGetAllSuccess() throws Exception {
-        Customer customer1 = new Customer();
-        customer1.setCompany("01");
-        customer1.setId("TEST001");
-        customer1.setName("CUSTOMER TEST001");
-        customer1.setTypeCustomer("F");
+        CustomerModel customer1 = mock(CustomerModel.class);
+        when(customer1.getCompany()).thenReturn("01");
+        when(customer1.getId()).thenReturn("000001");
+        when(customer1.getName()).thenReturn("CUSTOMER 001");
+        when(customer1.getTypeCustomer()).thenReturn("F");
 
-        Customer customer2 = new Customer();
-        customer2.setCompany("01");
-        customer2.setId("TEST002");
-        customer2.setName("CUSTOMER TEST002");
-        customer2.setTypeCustomer("F");
+        CustomerModel customer2 = mock(CustomerModel.class);
+        when(customer2.getCompany()).thenReturn("01");
+        when(customer2.getId()).thenReturn("000002");
+        when(customer2.getName()).thenReturn("CUSTOMER 002");
+        when(customer2.getTypeCustomer()).thenReturn("L");
 
-        List<Customer> customers = Arrays.asList(customer1, customer2);
+        List<CustomerModel> customers = Arrays.asList(customer1, customer2);
 
         // Mock
         when(service.findAll()).thenReturn(customers);
@@ -83,10 +95,10 @@ public class CustomerControllerTest {
         mockMvc.perform(get("/api/customers")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("TEST001"))
-                .andExpect(jsonPath("$[0].name").value("CUSTOMER TEST001"))
-                .andExpect(jsonPath("$[1].id").value("TEST002"))
-                .andExpect(jsonPath("$[1].name").value("CUSTOMER TEST002"));
+                .andExpect(jsonPath("$[0].id").value("000001"))
+                .andExpect(jsonPath("$[0].name").value("CUSTOMER 001"))
+                .andExpect(jsonPath("$[1].id").value("000002"))
+                .andExpect(jsonPath("$[1].name").value("CUSTOMER 002"));
     }
 
     @Test

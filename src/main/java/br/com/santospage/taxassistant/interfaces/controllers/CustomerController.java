@@ -1,19 +1,17 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.CustomerService;
-import br.com.santospage.taxassistant.domain.exceptions.CustomerNotFoundException;
-import br.com.santospage.taxassistant.domain.models.Customer;
-import io.swagger.v3.oas.annotations.Parameter;
+import br.com.santospage.taxassistant.domain.models.CustomerModel;
+import br.com.santospage.taxassistant.interfaces.dto.CustomerDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -28,8 +26,11 @@ public class CustomerController {
 
     // Search all customers
     @GetMapping
-    public ResponseEntity<List<Customer>> getAll() {
-        List<Customer> customers = service.findAll();
+    public ResponseEntity<List<CustomerDTO>> getAll() {
+        List<CustomerDTO> customers = service.findAll()
+                .stream()
+                .map(CustomerDTO::new)
+                .collect(Collectors.toList());
 
         if (customers.isEmpty()) {
             return ResponseEntity.noContent().build(); // Response 204
@@ -40,14 +41,11 @@ public class CustomerController {
 
     // Search customer by ID
     @GetMapping(params = {"company", "id"})
-    public ResponseEntity<Customer> getById(
-            @Parameter(description = "Company code") @RequestParam String company,
-            @Parameter(description = "Customer ID") @RequestParam String id) {
-        try {
-            Customer customer = service.findByFilialAndId(company, id);
-            return ResponseEntity.ok(customer);
-        } catch (CustomerNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+    public ResponseEntity<CustomerDTO> getById(
+            @RequestParam("company") String company,
+            @RequestParam("id") String id) {
+
+        CustomerModel customer = service.findByCompanyAndId(company, id);
+        return ResponseEntity.ok(new CustomerDTO(customer));
     }
 }

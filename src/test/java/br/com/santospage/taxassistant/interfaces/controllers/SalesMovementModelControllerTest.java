@@ -87,7 +87,7 @@ class SalesMovementModelControllerTest {
                 .thenThrow(new ResourceNotFoundException("Customer not found: TEST99"));
 
         mockMvc.perform(get(
-                        "/api/fiscal-movements/customer/{customer}"
+                        "/api/sales-movements/customer/{customer}"
                         , "TEST99"
                 )
                                 .accept(MediaType.APPLICATION_JSON))
@@ -122,7 +122,7 @@ class SalesMovementModelControllerTest {
                 .thenThrow(new ResourceNotFoundException("Product not found: TEST99"));
 
         mockMvc.perform(get(
-                        "/api/fiscal-movements/product/{product}"
+                        "/api/sales-movements/product/{product}"
                         , "TEST99"
                 )
                                 .accept(MediaType.APPLICATION_JSON))

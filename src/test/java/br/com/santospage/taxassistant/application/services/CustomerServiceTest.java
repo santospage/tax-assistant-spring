@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,28 +28,28 @@ class CustomerServiceTest {
     @Test
     void shouldReturnCustomerWhenExists() {
         CustomerModel customer = mock(CustomerModel.class);
-        when(customer.getCompany()).thenReturn("01");
-        when(customer.getId()).thenReturn("000001");
-        when(customer.getName()).thenReturn("CUSTOMER 001");
+        when(customer.getCompanyCode()).thenReturn("01");
+        when(customer.getCustomerId()).thenReturn("000001");
+        when(customer.getNameCustomer()).thenReturn("CUSTOMER 001");
         when(customer.isActive()).thenReturn(true);
 
-        when(repository.findByCompanyAndId("01", "000001"))
+        when(repository.findByCompanyCodeAndCustomerId("01", "000001"))
                 .thenReturn(Optional.of(customer));
 
         CustomerModel result = customerService.findByCompanyAndId("01", "000001");
 
         assertNotNull(result);
-        assertEquals("01", result.getCompany());
-        assertEquals("000001", result.getId());
-        assertEquals("CUSTOMER 001", result.getName());
+        assertEquals("01", result.getCompanyCode());
+        assertEquals("000001", result.getCustomerId());
+        assertEquals("CUSTOMER 001", result.getNameCustomer());
 
-        verify(repository).findByCompanyAndId("01", "000001");
+        verify(repository).findByCompanyCodeAndCustomerId("01", "000001");
     }
 
     @Test
     void shouldThrowWhenCustomerNotExists() {
         // Given
-        when(repository.findByCompanyAndId("01", "000099")).thenReturn(Optional.empty());
+        when(repository.findByCompanyCodeAndCustomerId("01", "000099")).thenReturn(Optional.empty());
 
         // When / Then
         assertThrows(
@@ -56,7 +57,7 @@ class CustomerServiceTest {
                 () -> customerService.findByCompanyAndId("01", "000099")
         );
 
-        verify(repository).findByCompanyAndId("01", "000099");
+        verify(repository).findByCompanyCodeAndCustomerId("01", "000099");
     }
 
     @Test
@@ -68,7 +69,7 @@ class CustomerServiceTest {
         CustomerModel customer2 = mock(CustomerModel.class);
         when(customer2.isActive()).thenReturn(true);
 
-        when(repository.findAll()).thenReturn(List.of(customer1, customer2));
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of(customer1, customer2));
 
         // When
         List<CustomerModel> result = customerService.findAll();
@@ -78,13 +79,13 @@ class CustomerServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.stream().allMatch(CustomerModel::isActive));
 
-        verify(repository).findAll();
+        verify(repository).findAll(any(Sort.class));
     }
 
     @Test
     void shouldAllCustomersNotExists() {
         // Given
-        when(repository.findAll()).thenReturn(List.of());
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
 
         // When
         List<CustomerModel> result = customerService.findAll();
@@ -92,6 +93,6 @@ class CustomerServiceTest {
         // Then
         assertTrue(result.isEmpty());
 
-        verify(repository).findAll();
+        verify(repository).findAll(any(Sort.class));
     }
 }

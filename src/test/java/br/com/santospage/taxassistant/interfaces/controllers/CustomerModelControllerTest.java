@@ -45,9 +45,9 @@ class CustomerModelControllerTest {
     @Test
     void shouldGetByIdFound() throws Exception {
         CustomerModel customer = mock(CustomerModel.class);
-        when(customer.getCompany()).thenReturn("01");
-        when(customer.getId()).thenReturn("000001");
-        when(customer.getName()).thenReturn("CUSTOMER 001");
+        when(customer.getCompanyCode()).thenReturn("01");
+        when(customer.getCustomerId()).thenReturn("000001");
+        when(customer.getNameCustomer()).thenReturn("CUSTOMER 001");
         when(customer.getTypeCustomer()).thenReturn("S");
 
         when(service.findByCompanyAndId("01", "000001")).thenReturn(customer);
@@ -57,8 +57,8 @@ class CustomerModelControllerTest {
                                 .param("id", "000001")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("000001"))
-                .andExpect(jsonPath("$.name").value("CUSTOMER 001"));
+                .andExpect(jsonPath("$.customerId").value("000001"))
+                .andExpect(jsonPath("$.nameCustomer").value("CUSTOMER 001"));
     }
 
     @Test
@@ -76,15 +76,15 @@ class CustomerModelControllerTest {
     @Test
     void shouldGetAllSuccess() throws Exception {
         CustomerModel customer1 = mock(CustomerModel.class);
-        when(customer1.getCompany()).thenReturn("01");
-        when(customer1.getId()).thenReturn("000001");
-        when(customer1.getName()).thenReturn("CUSTOMER 001");
+        when(customer1.getCompanyCode()).thenReturn("01");
+        when(customer1.getCustomerId()).thenReturn("000001");
+        when(customer1.getNameCustomer()).thenReturn("CUSTOMER 001");
         when(customer1.getTypeCustomer()).thenReturn("F");
 
         CustomerModel customer2 = mock(CustomerModel.class);
-        when(customer2.getCompany()).thenReturn("01");
-        when(customer2.getId()).thenReturn("000002");
-        when(customer2.getName()).thenReturn("CUSTOMER 002");
+        when(customer2.getCompanyCode()).thenReturn("01");
+        when(customer2.getCustomerId()).thenReturn("000002");
+        when(customer2.getNameCustomer()).thenReturn("CUSTOMER 002");
         when(customer2.getTypeCustomer()).thenReturn("L");
 
         List<CustomerModel> customers = Arrays.asList(customer1, customer2);
@@ -95,10 +95,10 @@ class CustomerModelControllerTest {
         mockMvc.perform(get("/api/customers")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("000001"))
-                .andExpect(jsonPath("$[0].name").value("CUSTOMER 001"))
-                .andExpect(jsonPath("$[1].id").value("000002"))
-                .andExpect(jsonPath("$[1].name").value("CUSTOMER 002"));
+                .andExpect(jsonPath("$[0].customerId").value("000001"))
+                .andExpect(jsonPath("$[0].nameCustomer").value("CUSTOMER 001"))
+                .andExpect(jsonPath("$[1].customerId").value("000002"))
+                .andExpect(jsonPath("$[1].nameCustomer").value("CUSTOMER 002"));
     }
 
     @Test

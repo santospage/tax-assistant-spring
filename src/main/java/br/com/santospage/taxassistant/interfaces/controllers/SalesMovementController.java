@@ -1,18 +1,15 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.SalesMovementService;
-import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.exceptions.SalesMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.models.SalesMovement;
+import br.com.santospage.taxassistant.domain.models.SalesMovementModel;
+import br.com.santospage.taxassistant.interfaces.dto.SalesMovementDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,8 +25,11 @@ public class SalesMovementController {
 
     // Search all (ex: /api/sales-movements)
     @GetMapping
-    public ResponseEntity<List<SalesMovement>> getAll() {
-        List<SalesMovement> results = salesMovementService.findAll();
+    public ResponseEntity<List<SalesMovementDTO>> getAll() {
+        List<SalesMovementDTO> results = salesMovementService.findAll()
+                .stream()
+                .map(SalesMovementDTO::new)
+                .toList();
 
         if (results.isEmpty()) {
             return ResponseEntity.noContent().build(); // Response 204
@@ -40,37 +40,31 @@ public class SalesMovementController {
 
     // Search /api/sales-movements/F2D123456
     @GetMapping("/{id}")
-    public ResponseEntity<SalesMovement> getById(
+    public ResponseEntity<SalesMovementDTO> getById(
             @Parameter(description = "Sales movement ID") @PathVariable String id) {
-        try {
-            SalesMovement sm = salesMovementService.findById(id);
-            return ResponseEntity.ok(sm);
-        } catch (SalesMovementNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        SalesMovementModel result = salesMovementService.findById(id);
+        return ResponseEntity.ok(new SalesMovementDTO(result));
     }
 
     // Search for customerCode (ex: /api/sales-movements/customer/customer001)
     @GetMapping("/customer/{customerCode}")
-    public ResponseEntity<List<SalesMovement>> getByCustomer(
+    public ResponseEntity<List<SalesMovementDTO>> getByCustomer(
             @Parameter(description = "Sales movement customer") @PathVariable String customerCode) {
-        try {
-            List<SalesMovement> results = salesMovementService.findByCustomer(customerCode);
-            return ResponseEntity.ok(results);
-        } catch (FiscalMovementNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        List<SalesMovementModel> results = salesMovementService.findByCustomer(customerCode);
+        List<SalesMovementDTO> dtoList = results.stream()
+                .map(SalesMovementDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     // Search for productCode (ex: /api/sales-movements/product/product001)
     @GetMapping("/product/{productCode}")
-    public ResponseEntity<List<SalesMovement>> getByProduct(
+    public ResponseEntity<List<SalesMovementDTO>> getByProduct(
             @Parameter(description = "Sales movement product") @PathVariable String productCode) {
-        try {
-            List<SalesMovement> results = salesMovementService.findByProduct(productCode);
-            return ResponseEntity.ok(results);
-        } catch (FiscalMovementNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        List<SalesMovementModel> results = salesMovementService.findByProduct(productCode);
+        List<SalesMovementDTO> dtoList = results.stream()
+                .map(SalesMovementDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 }

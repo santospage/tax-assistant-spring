@@ -15,5 +15,5 @@ public interface CustomerRepository extends JpaRepository<CustomerModel, String>
     List<CustomerModel> findAll();
 
     // Search customer by ID
-    Optional<CustomerModel> findByCompanyAndId(String company, String id);
+    Optional<CustomerModel> findByCompanyCodeAndCustomerId(String companyCode, String customerId);
 }

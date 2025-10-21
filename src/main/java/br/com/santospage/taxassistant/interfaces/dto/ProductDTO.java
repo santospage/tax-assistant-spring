@@ -3,9 +3,9 @@ package br.com.santospage.taxassistant.interfaces.dto;
 import br.com.santospage.taxassistant.domain.models.ProductModel;
 
 public class ProductDTO {
-    private final String company;
-    private final String id;
-    private final String name;
+    private final String companyCode;
+    private final String productId;
+    private final String nameProduct;
     private final String typeProduct;
     private final String specifingCodeST;
     private final String unitMeasure;
@@ -15,9 +15,9 @@ public class ProductDTO {
     private final String mercosulExtNomenclature;
 
     public ProductDTO(ProductModel model) {
-        this.company = model.getCompany();
-        this.id = model.getId();
-        this.name = model.getName();
+        this.companyCode = model.getCompanyCode();
+        this.productId = model.getProductId();
+        this.nameProduct = model.getNameProduct();
         this.typeProduct = model.getTypeProduct();
         this.specifingCodeST = model.getSpecifingCodeST();
         this.unitMeasure = model.getUnitMeasure();
@@ -28,16 +28,16 @@ public class ProductDTO {
     }
 
     // Getters
-    public String getCompany() {
-        return company;
+    public String getCompanyCode() {
+        return companyCode;
     }
 
-    public String getId() {
-        return id;
+    public String getProductId() {
+        return productId;
     }
 
-    public String getName() {
-        return name;
+    public String getNameProduct() {
+        return nameProduct;
     }
 
     public String getTypeProduct() {

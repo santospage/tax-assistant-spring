@@ -3,11 +3,11 @@ package br.com.santospage.taxassistant.interfaces.dto;
 import br.com.santospage.taxassistant.domain.models.CustomerModel;
 
 public class CustomerDTO {
-    private final String company;
-    private final String id;
-    private final String name;
+    private final String companyCode;
+    private final String customerId;
+    private final String nameCustomer;
     private final String natureCustomer;
-    private final String address;
+    private final String addressCustomer;
     private final String typeCustomer;
     private final String ufCustomer;
     private final String municipalCode;
@@ -20,11 +20,11 @@ public class CustomerDTO {
     private final String stateRegistrationCustomer;
 
     public CustomerDTO(CustomerModel model) {
-        this.company = model.getCompany();
-        this.id = model.getId();
-        this.name = model.getName();
+        this.companyCode = model.getCompanyCode();
+        this.customerId = model.getCustomerId();
+        this.nameCustomer = model.getNameCustomer();
         this.natureCustomer = model.getNatureCustomer();
-        this.address = model.getAddress();
+        this.addressCustomer = model.getAddressCustomer();
         this.typeCustomer = (model.getTypeCustomer() != null)
                 ? model.getTypeCustomer() : "";
         this.ufCustomer = model.getUfCustomer();
@@ -39,24 +39,24 @@ public class CustomerDTO {
     }
 
     // Getters
-    public String getCompany() {
-        return company;
+    public String getCompanyCode() {
+        return companyCode;
     }
 
-    public String getId() {
-        return id;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public String getName() {
-        return name;
+    public String getNameCustomer() {
+        return nameCustomer;
     }
 
     public String getNatureCustomer() {
         return natureCustomer;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressCustomer() {
+        return addressCustomer;
     }
 
     public String getTypeCustomer() {

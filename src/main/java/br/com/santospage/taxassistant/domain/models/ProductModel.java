@@ -9,14 +9,14 @@ import jakarta.persistence.Table;
 @Table(name = "SB1T10")
 public class ProductModel {
     @Column(name = "B1_FILIAL")
-    private String company;
+    private String companyCode;
 
     @Id
     @Column(name = "B1_COD")
-    private String id;
+    private String productId;
 
     @Column(name = "B1_DESC")
-    private String name;
+    private String nameProduct;
 
     @Column(name = "B1_TIPO")
     private String typeProduct;
@@ -43,16 +43,16 @@ public class ProductModel {
     private String deleted;
 
     // Getters
-    public String getCompany() {
-        return company;
+    public String getCompanyCode() {
+        return companyCode;
     }
 
-    public String getId() {
-        return id;
+    public String getProductId() {
+        return productId;
     }
 
-    public String getName() {
-        return name;
+    public String getNameProduct() {
+        return nameProduct;
     }
 
     public String getTypeProduct() {

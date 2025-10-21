@@ -13,19 +13,19 @@ public class CustomerModel implements Serializable {
 
     @Id
     @Column(name = "A1_COD")
-    private String id;
+    private String customerId;
 
     @Column(name = "A1_FILIAL")
-    private String company;
+    private String companyCode;
 
     @Column(name = "A1_NOME")
-    private String name;
+    private String nameCustomer;
 
     @Column(name = "A1_NATUREZ")
     private String natureCustomer;
 
     @Column(name = "A1_END")
-    private String address;
+    private String addressCustomer;
 
     @Column(name = "A1_TIPO")
     private String typeCustomer;
@@ -61,24 +61,24 @@ public class CustomerModel implements Serializable {
     private String deleted;
 
     // Getters
-    public String getCompany() {
-        return company;
+    public String getCompanyCode() {
+        return companyCode;
     }
 
-    public String getId() {
-        return id;
+    public String getCustomerId() {
+        return customerId;
     }
 
-    public String getName() {
-        return name;
+    public String getNameCustomer() {
+        return nameCustomer;
     }
 
     public String getNatureCustomer() {
         return natureCustomer;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddressCustomer() {
+        return addressCustomer;
     }
 
     public String getTypeCustomer() {

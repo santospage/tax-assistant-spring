@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,28 +28,28 @@ class ProductServiceTest {
     @Test
     void shouldReturnProductWhenExists() {
         ProductModel product = mock(ProductModel.class);
-        when(product.getCompany()).thenReturn("01");
-        when(product.getId()).thenReturn("000001");
-        when(product.getName()).thenReturn("PRODUCT 001");
+        when(product.getCompanyCode()).thenReturn("01");
+        when(product.getProductId()).thenReturn("000001");
+        when(product.getNameProduct()).thenReturn("PRODUCT 001");
         when(product.isActive()).thenReturn(true);
 
-        when(repository.findByCompanyAndId("01", "000001"))
+        when(repository.findByCompanyCodeAndProductId("01", "000001"))
                 .thenReturn(Optional.of(product));
 
         ProductModel result = productService.findByCompanyAndId("01", "000001");
 
         assertNotNull(result);
-        assertEquals("01", result.getCompany());
-        assertEquals("000001", result.getId());
-        assertEquals("PRODUCT 001", result.getName());
+        assertEquals("01", result.getCompanyCode());
+        assertEquals("000001", result.getProductId());
+        assertEquals("PRODUCT 001", result.getNameProduct());
 
-        verify(repository).findByCompanyAndId("01", "000001");
+        verify(repository).findByCompanyCodeAndProductId("01", "000001");
     }
 
     @Test
     void shouldThrowWhenProductNotExists() {
         // Given
-        when(repository.findByCompanyAndId("01", "000099")).thenReturn(Optional.empty());
+        when(repository.findByCompanyCodeAndProductId("01", "000099")).thenReturn(Optional.empty());
 
         // When / Then
         assertThrows(
@@ -56,7 +57,7 @@ class ProductServiceTest {
                 () -> productService.findByCompanyAndId("01", "000099")
         );
 
-        verify(repository).findByCompanyAndId("01", "000099");
+        verify(repository).findByCompanyCodeAndProductId("01", "000099");
     }
 
     @Test
@@ -68,7 +69,7 @@ class ProductServiceTest {
         ProductModel product2 = mock(ProductModel.class);
         when(product2.isActive()).thenReturn(true);
 
-        when(repository.findAll()).thenReturn(List.of(product1, product2));
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of(product1, product2));
 
         // When
         List<ProductModel> result = productService.findAll();
@@ -78,13 +79,13 @@ class ProductServiceTest {
         assertEquals(2, result.size());
         assertTrue(result.stream().allMatch(ProductModel::isActive));
 
-        verify(repository).findAll();
+        verify(repository).findAll(any(Sort.class));
     }
 
     @Test
     void shouldAllProductsNotExists() {
         // Given
-        when(repository.findAll()).thenReturn(List.of());
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
 
         // When
         List<ProductModel> result = productService.findAll();
@@ -92,6 +93,6 @@ class ProductServiceTest {
         // Then
         assertTrue(result.isEmpty());
 
-        verify(repository).findAll();
+        verify(repository).findAll(any(Sort.class));
     }
 }

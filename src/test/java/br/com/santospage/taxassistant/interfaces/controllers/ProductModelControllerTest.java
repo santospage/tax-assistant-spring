@@ -45,9 +45,9 @@ public class ProductModelControllerTest {
     @Test
     void shouldGetByIdFound() throws Exception {
         ProductModel product = mock(ProductModel.class);
-        when(product.getCompany()).thenReturn("01");
-        when(product.getId()).thenReturn("000001");
-        when(product.getName()).thenReturn("PRODUCT 001");
+        when(product.getCompanyCode()).thenReturn("01");
+        when(product.getProductId()).thenReturn("000001");
+        when(product.getNameProduct()).thenReturn("PRODUCT 001");
 
         when(service.findByCompanyAndId("01", "000001")).thenReturn(product);
 
@@ -56,8 +56,8 @@ public class ProductModelControllerTest {
                                 .param("id", "000001")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("000001"))
-                .andExpect(jsonPath("$.name").value("PRODUCT 001"));
+                .andExpect(jsonPath("$.productId").value("000001"))
+                .andExpect(jsonPath("$.nameProduct").value("PRODUCT 001"));
     }
 
     @Test
@@ -75,14 +75,14 @@ public class ProductModelControllerTest {
     @Test
     void shouldGetAllSuccess() throws Exception {
         ProductModel product1 = mock(ProductModel.class);
-        when(product1.getCompany()).thenReturn("01");
-        when(product1.getId()).thenReturn("000001");
-        when(product1.getName()).thenReturn("PRODUCT 001");
+        when(product1.getCompanyCode()).thenReturn("01");
+        when(product1.getProductId()).thenReturn("000001");
+        when(product1.getNameProduct()).thenReturn("PRODUCT 001");
 
         ProductModel product2 = mock(ProductModel.class);
-        when(product2.getCompany()).thenReturn("01");
-        when(product2.getId()).thenReturn("000002");
-        when(product2.getName()).thenReturn("PRODUCT 002");
+        when(product2.getCompanyCode()).thenReturn("01");
+        when(product2.getProductId()).thenReturn("000002");
+        when(product2.getNameProduct()).thenReturn("PRODUCT 002");
 
         List<ProductModel> products = Arrays.asList(product1, product2);
 
@@ -92,10 +92,10 @@ public class ProductModelControllerTest {
         mockMvc.perform(get("/api/products")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("000001"))
-                .andExpect(jsonPath("$[0].name").value("PRODUCT 001"))
-                .andExpect(jsonPath("$[1].id").value("000002"))
-                .andExpect(jsonPath("$[1].name").value("PRODUCT 002"));
+                .andExpect(jsonPath("$[0].productId").value("000001"))
+                .andExpect(jsonPath("$[0].nameProduct").value("PRODUCT 001"))
+                .andExpect(jsonPath("$[1].productId").value("000002"))
+                .andExpect(jsonPath("$[1].nameProduct").value("PRODUCT 002"));
     }
 
     @Test

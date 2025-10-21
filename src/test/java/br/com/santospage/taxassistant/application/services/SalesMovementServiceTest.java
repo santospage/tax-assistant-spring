@@ -1,28 +1,49 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.exceptions.SalesMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.models.SalesMovement;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.SalesMovementModel;
 import br.com.santospage.taxassistant.domain.repositories.SalesMovementRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class SalesMovementServiceTest {
+class SalesMovementServiceTest {
     @Mock
     private SalesMovementRepository repository;
 
     @InjectMocks
     private SalesMovementService service;
+
+    @Test
+    void shouldReturnSalesMovementsById() {
+        // Given
+        SalesMovementModel salesMovement = mock(SalesMovementModel.class);
+        when(salesMovement.getCompanyCode()).thenReturn("01");
+        when(salesMovement.getTaxId()).thenReturn("000001");
+        when(salesMovement.isActive()).thenReturn(true);
+
+        when(repository.findById("000001"))
+                .thenReturn(Optional.of(salesMovement));
+
+        // When
+        SalesMovementModel result = service.findById("000001");
+
+        // Then
+        assertNotNull(result);
+        assertEquals("01", result.getCompanyCode());
+        assertEquals("000001", result.getTaxId());
+        verify(repository).findById("000001");
+    }
 
     @Test
     void shouldThrowWhenSalesMovementNotExists() {
@@ -31,7 +52,7 @@ public class SalesMovementServiceTest {
 
         // When / Then
         assertThrows(
-                SalesMovementNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> service.findById("099")
         );
 
@@ -39,97 +60,125 @@ public class SalesMovementServiceTest {
     }
 
     @Test
-    void shouldReturnSalesMovementsById() {
-        // Given
-        SalesMovement salesMovement = new SalesMovement();
-        salesMovement.setCompanyCode("COMPANY01");
-        salesMovement.setIdTax("TEST001");
-
-        when(repository.findById("TEST001"))
-                .thenReturn(Optional.of(salesMovement));
-
-        // When
-        SalesMovement result = service.findById("TEST001");
-
-        // Then
-        assertNotNull(result);
-        assertEquals("COMPANY01", result.getCompanyCode());
-        assertEquals("TEST001", result.getIdTax());
-
-        verify(repository).findById("TEST001");
-    }
-
-    @Test
     void shouldReturnSalesMovementsByCustomer() {
         // Given
-        SalesMovement salesMovement = new SalesMovement();
-        salesMovement.setCompanyCode("COMPANY01");
-        salesMovement.setCustomerCode("TEST01");
+        SalesMovementModel salesMovement = mock(SalesMovementModel.class);
+        when(salesMovement.getCompanyCode()).thenReturn("01");
+        when(salesMovement.getCustomerCode()).thenReturn("CUSTOMER01");
+        when(salesMovement.isActive()).thenReturn(true);
 
-        when(repository.findByCustomerCode("TEST01"))
+        when(repository.findByCustomerCode(eq("CUSTOMER01"), any(Sort.class)))
                 .thenReturn(List.of(salesMovement));
 
         // When
-        List<SalesMovement> results = service.findByCustomer("TEST01");
+        List<SalesMovementModel> results = service.findByCustomer("CUSTOMER01");
 
         // Then
         assertNotNull(results);
         assertEquals(1, results.size());
 
-        SalesMovement result = results.getFirst();
-        assertEquals("COMPANY01", result.getCompanyCode());
-        assertEquals("TEST01", result.getCustomerCode());
+        SalesMovementModel result = results.getFirst();
+        assertEquals("01", result.getCompanyCode());
+        assertEquals("CUSTOMER01", result.getCustomerCode());
 
-        verify(repository).findByCustomerCode("TEST01");
+        verify(repository).findByCustomerCode(eq("CUSTOMER01"), any(Sort.class));
+    }
+
+    @Test
+    void shouldReturnSalesMovementsByCustomerNotExists() {
+        // Given
+        when(repository.findByCustomerCode(eq("099"), any(Sort.class)))
+                .thenReturn(List.of());
+
+        // When / Then
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> service.findByCustomer("099")
+        );
+
+        verify(repository).findByCustomerCode(eq("099"), any(Sort.class));
     }
 
     @Test
     void shouldReturnSalesMovementsByProduct() {
         // Given
-        SalesMovement salesMovement = new SalesMovement();
-        salesMovement.setCompanyCode("COMPANY01");
-        salesMovement.setProductCode("PRODUCT01");
+        SalesMovementModel salesMovement = mock(SalesMovementModel.class);
+        when(salesMovement.getCompanyCode()).thenReturn("01");
+        when(salesMovement.getProductCode()).thenReturn("PRODUCT01");
+        when(salesMovement.isActive()).thenReturn(true);
 
-        when(repository.findByProductCode("PRODUCT01"))
+        when(repository.findByProductCode(eq("PRODUCT01"), any(Sort.class)))
                 .thenReturn(List.of(salesMovement));
 
         // When
-        List<SalesMovement> results = service.findByProduct("PRODUCT01");
+        List<SalesMovementModel> results = service.findByProduct("PRODUCT01");
 
         // Then
         assertNotNull(results);
         assertEquals(1, results.size());
 
-        SalesMovement result = results.getFirst();
-        assertEquals("COMPANY01", result.getCompanyCode());
+        SalesMovementModel result = results.getFirst();
+        assertEquals("01", result.getCompanyCode());
         assertEquals("PRODUCT01", result.getProductCode());
 
-        verify(repository).findByProductCode("PRODUCT01");
+        verify(repository).findByProductCode(eq("PRODUCT01"), any(Sort.class));
+    }
+
+    @Test
+    void shouldReturnSalesMovementsByProductNotExists() {
+        // Given
+        when(repository.findByProductCode(eq("099"), any(Sort.class)))
+                .thenReturn(List.of());
+
+        // When / Then
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> service.findByProduct("099")
+        );
+
+        verify(repository).findByProductCode(eq("099"), any(Sort.class));
     }
 
     @Test
     void shouldReturnAllSalesMovements() {
         // Given
-        SalesMovement sm1 = new SalesMovement();
-        sm1.setCompanyCode("COMPANY01");
-        sm1.setIdTax("ID001");
+        SalesMovementModel sm1 = mock(SalesMovementModel.class);
+        when(sm1.getCompanyCode()).thenReturn("01");
+        when(sm1.getProductCode()).thenReturn("PRODUCT01");
+        when(sm1.isActive()).thenReturn(true);
 
-        SalesMovement sm2 = new SalesMovement();
-        sm2.setCompanyCode("COMPANY01");
-        sm2.setIdTax("ID002");
+        SalesMovementModel sm2 = mock(SalesMovementModel.class);
+        when(sm2.getCompanyCode()).thenReturn("01");
+        when(sm2.getProductCode()).thenReturn("PRODUCT02");
+        when(sm2.isActive()).thenReturn(true);
 
-        List<SalesMovement> list = List.of(sm1, sm2);
-        when(repository.findAll()).thenReturn(list);
+        List<SalesMovementModel> list = List.of(sm1, sm2);
+        when(repository.findAll(any(Sort.class))).thenReturn(list);
 
         // When
-        List<SalesMovement> result = service.findAll();
+        List<SalesMovementModel> result = service.findAll();
 
         // Then
         assertEquals(2, result.size());
-        assertEquals("COMPANY01", result.get(0).getCompanyCode());
-        assertEquals("ID001", result.get(0).getIdTax());
-        assertEquals("COMPANY01", result.get(1).getCompanyCode());
-        assertEquals("ID002", result.get(1).getIdTax());
-        verify(repository).findAll();
+        assertEquals("01", result.get(0).getCompanyCode());
+        assertEquals("PRODUCT01", result.get(0).getProductCode());
+        assertEquals("01", result.get(1).getCompanyCode());
+        assertEquals("PRODUCT02", result.get(1).getProductCode());
+
+        verify(repository).findAll(any(Sort.class));
+    }
+
+    @Test
+    void shouldAllSalesMovementsNotExists() {
+        // Given
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
+
+        // When
+        List<SalesMovementModel> result = service.findAll();
+
+        // Then
+        assertTrue(result.isEmpty());
+
+        verify(repository).findAll(any(Sort.class));
     }
 }

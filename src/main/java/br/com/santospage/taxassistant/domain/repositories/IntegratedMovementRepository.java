@@ -17,9 +17,9 @@ public class IntegratedMovementRepository {
     public List<IntegratedMovement> findIntegratedMovements(String company) {
         String sql = """
                 SELECT DISTINCT
-                    F2B.F2B_FILIAL AS company,
-                    F2B.F2B_TRIB AS trib,
-                    F2C.F2C_DESC AS description
+                    F2B.F2B_FILIAL AS companyCode,
+                    F2B.F2B_TRIB AS taxId,
+                    F2C.F2C_DESC AS descriptionTax
                 FROM F2BT10 F2B
                 INNER JOIN F2ET10 F2E
                     ON F2E.F2E_TRIB = F2B.F2B_TRIB AND F2E.D_E_L_E_T_ = ' '

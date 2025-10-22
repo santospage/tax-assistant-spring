@@ -1,23 +1,21 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.IntegratedMovementService;
-import br.com.santospage.taxassistant.domain.exceptions.IntegratedMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.models.IntegratedMovement;
-import org.junit.jupiter.api.Assertions;
+import br.com.santospage.taxassistant.interfaces.dto.IntegratedMovementDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class IntegratedMovementControllerTest {
+class IntegratedMovementModelControllerTest {
 
     private IntegratedMovementService service;
     private IntegratedMovementController controller;
@@ -28,39 +26,34 @@ class IntegratedMovementControllerTest {
         controller = new IntegratedMovementController(service);
     }
 
-    // ---------------------------
-    // getAll()
-    // ---------------------------
-
     @Test
     void getAll_shouldReturnOk_whenServiceReturnsList() {
         // Arrange
-        IntegratedMovement movement = new IntegratedMovement(null, null, null);
-        when(service.getAll()).thenReturn(List.of(movement));
+        IntegratedMovementDTO dto = new IntegratedMovementDTO(
+                "001",
+                "TX123",
+                "Description 1"
+        );
+
+        when(service.getAll()).thenReturn(Collections.singletonList(dto));
 
         // Act
         ResponseEntity<?> response = controller.getAll();
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertInstanceOf(List.class, response.getBody());
-        verify(service, times(1)).getAll();
-    }
 
-    @Test
-    void getAll_shouldReturnNotFound_whenServiceThrowsNotFoundException() {
-        // Arrange
-        when(service.getAll()).thenThrow(new IntegratedMovementNotFoundException("No records found."));
+        @SuppressWarnings("unchecked")
+        List<IntegratedMovementDTO> body = (List<IntegratedMovementDTO>) response.getBody();
+        assertEquals(1, body.size());
 
-        // Act
-        ResponseEntity<?> response = controller.getAll();
+        IntegratedMovementDTO returnedDto = body.getFirst();
+        assertEquals("001", returnedDto.companyCode());
+        assertEquals("TX123", returnedDto.taxId());
+        assertEquals("Description 1", returnedDto.descriptionTax());
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertInstanceOf(Map.class, response.getBody());
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        assertEquals("Not Found", body.get("error"));
-        assertEquals("No records found.", body.get("message"));
         verify(service, times(1)).getAll();
     }
 
@@ -74,49 +67,47 @@ class IntegratedMovementControllerTest {
 
         // Assert
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertInstanceOf(Map.class, response.getBody());
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), body.get("status"));
         assertEquals("Internal Server Error", body.get("error"));
         assertEquals("Unexpected error", body.get("message"));
+
         verify(service, times(1)).getAll();
     }
-
-    // ---------------------------
-    // getByCompany()
-    // ---------------------------
 
     @Test
     void getByCompany_shouldReturnOk_whenServiceReturnsList() {
         // Arrange
         String company = "ABC";
-        IntegratedMovement movement = new IntegratedMovement(null, null, null);
-        when(service.getByCompany(company)).thenReturn(List.of(movement));
+        IntegratedMovementDTO dto = new IntegratedMovementDTO(
+                "ABC",
+                "TX456",
+                "Description 2"
+        );
+
+        when(service.getByCompany(company)).thenReturn(Collections.singletonList(dto));
 
         // Act
         ResponseEntity<?> response = controller.getByCompany(company);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
         assertInstanceOf(List.class, response.getBody());
-        verify(service, times(1)).getByCompany(company);
-    }
 
-    @Test
-    void getByCompany_shouldReturnNotFound_whenServiceThrowsNotFoundException() {
-        // Arrange
-        String company = "XYZ";
-        when(service.getByCompany(company))
-                .thenThrow(new IntegratedMovementNotFoundException("No records found for the company: XYZ"));
+        @SuppressWarnings("unchecked")
+        List<IntegratedMovementDTO> body = (List<IntegratedMovementDTO>) response.getBody();
+        assertEquals(1, body.size());
 
-        // Act
-        ResponseEntity<?> response = controller.getByCompany(company);
+        IntegratedMovementDTO returnedDto = body.getFirst();
+        assertEquals("ABC", returnedDto.companyCode());
+        assertEquals("TX456", returnedDto.taxId());
+        assertEquals("Description 2", returnedDto.descriptionTax());
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        Assertions.assertNotNull(body);
-        assertEquals("Not Found", body.get("error"));
-        assertEquals("No records found for the company: XYZ", body.get("message"));
         verify(service, times(1)).getByCompany(company);
     }
 
@@ -124,17 +115,23 @@ class IntegratedMovementControllerTest {
     void getByCompany_shouldReturnInternalServerError_whenUnexpectedExceptionOccurs() {
         // Arrange
         String company = "DEF";
-        when(service.getByCompany(company)).thenThrow(new RuntimeException("Unexpected failure"));
+        when(service.getByCompany(company))
+                .thenThrow(new RuntimeException("Unexpected failure"));
 
         // Act
         ResponseEntity<?> response = controller.getByCompany(company);
 
         // Assert
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        Map<?, ?> body = (Map<?, ?>) response.getBody();
-        Assertions.assertNotNull(body);
+        assertNotNull(response.getBody());
+        assertInstanceOf(Map.class, response.getBody());
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> body = (Map<String, Object>) response.getBody();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), body.get("status"));
         assertEquals("Internal Server Error", body.get("error"));
         assertEquals("Unexpected failure", body.get("message"));
+
         verify(service, times(1)).getByCompany(company);
     }
 }

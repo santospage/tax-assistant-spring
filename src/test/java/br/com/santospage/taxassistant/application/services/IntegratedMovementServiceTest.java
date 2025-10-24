@@ -1,8 +1,9 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.exceptions.IntegratedMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.models.IntegratedMovement;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.IntegratedMovementModel;
 import br.com.santospage.taxassistant.domain.repositories.IntegratedMovementRepository;
+import br.com.santospage.taxassistant.interfaces.dto.IntegratedMovementDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,17 +28,28 @@ class IntegratedMovementServiceTest {
     @Test
     void getAll_shouldReturnList_whenRepositoryHasData() {
         // Arrange
-        IntegratedMovement movement = new IntegratedMovement(null, null, null);
+        IntegratedMovementModel movement = new IntegratedMovementModel(
+                "001",           // companyCode
+                "TX123",         // taxId
+                "Description 1"  // descriptionTax
+        );
         when(repository.findIntegratedMovements(null)).thenReturn(List.of(movement));
 
         // Act
-        List<IntegratedMovement> result = service.getAll();
+        List<IntegratedMovementDTO> result = service.getAll();
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
+
+        IntegratedMovementDTO dto = result.getFirst();
+        assertEquals("001", dto.companyCode());
+        assertEquals("TX123", dto.taxId());
+        assertEquals("Description 1", dto.descriptionTax());
+
         verify(repository, times(1)).findIntegratedMovements(null);
     }
+
 
     @Test
     void getAll_shouldThrowException_whenRepositoryReturnsEmptyList() {
@@ -45,8 +57,8 @@ class IntegratedMovementServiceTest {
         when(repository.findIntegratedMovements(null)).thenReturn(Collections.emptyList());
 
         // Act & Assert
-        IntegratedMovementNotFoundException exception = assertThrows(
-                IntegratedMovementNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> service.getAll()
         );
 
@@ -58,17 +70,28 @@ class IntegratedMovementServiceTest {
     void getByCompany_shouldReturnList_whenRepositoryHasData() {
         // Arrange
         String company = "ABC";
-        IntegratedMovement movement = new IntegratedMovement(null, null, null);
+        IntegratedMovementModel movement = new IntegratedMovementModel(
+                "ABC",
+                "TX456",
+                "Description 2"
+        );
         when(repository.findIntegratedMovements(company)).thenReturn(List.of(movement));
 
         // Act
-        List<IntegratedMovement> result = service.getByCompany(company);
+        List<IntegratedMovementDTO> result = service.getByCompany(company);
 
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
+
+        IntegratedMovementDTO dto = result.getFirst();
+        assertEquals("ABC", dto.companyCode());
+        assertEquals("TX456", dto.taxId());
+        assertEquals("Description 2", dto.descriptionTax());
+
         verify(repository, times(1)).findIntegratedMovements(company);
     }
+
 
     @Test
     void getByCompany_shouldThrowException_whenRepositoryReturnsEmptyList() {
@@ -77,8 +100,8 @@ class IntegratedMovementServiceTest {
         when(repository.findIntegratedMovements(company)).thenReturn(Collections.emptyList());
 
         // Act & Assert
-        IntegratedMovementNotFoundException exception = assertThrows(
-                IntegratedMovementNotFoundException.class,
+        ResourceNotFoundException exception = assertThrows(
+                ResourceNotFoundException.class,
                 () -> service.getByCompany(company)
         );
 

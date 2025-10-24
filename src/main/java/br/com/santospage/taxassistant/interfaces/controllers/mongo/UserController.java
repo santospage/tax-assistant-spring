@@ -1,16 +1,14 @@
 package br.com.santospage.taxassistant.interfaces.controllers.mongo;
 
 import br.com.santospage.taxassistant.application.services.mongo.UserService;
-import br.com.santospage.taxassistant.domain.exceptions.UserAlreadyExistsException;
-import br.com.santospage.taxassistant.domain.exceptions.UserNotFoundException;
-import br.com.santospage.taxassistant.domain.models.mongo.User;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.mongo.UserModel;
+import br.com.santospage.taxassistant.interfaces.dto.mongo.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,66 +17,74 @@ public class UserController {
     private final UserService service;
 
     public UserController(UserService service) {
-
         this.service = service;
-    }
-
-    @PostMapping
-    public ResponseEntity<User> create(@RequestBody User userRequest) {
-        User created = service.create(
-                userRequest.getUserName(),
-                userRequest.getFullName(),
-                userRequest.getPassword(),
-                userRequest.getEmail(),
-                userRequest.getRole()
-        );
-        return ResponseEntity.ok(created);
-    }
-
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<Map<String, String>> handleUserExists(UserAlreadyExistsException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("error", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     //GET all users
     @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        List<User> users = service.getAllUsers();
+    public ResponseEntity<List<UserDTO>> getAll() {
+        List<UserDTO> users = service.getAllUsers()
+                .stream()
+                .map(UserDTO::new)
+                .toList();
+
         return ResponseEntity.ok(users);
     }
 
-    //GET user by user
+    //GET by user
     @GetMapping("/{username}")
-    public ResponseEntity<?> getByUser(@PathVariable("username") String username) {
+    public ResponseEntity<UserDTO> getByUser(@PathVariable("username") String username) {
         try {
-            User user = service.getUserByUsername(username);
-            return ResponseEntity.ok(user);
-        } catch (UserNotFoundException ex) {
-            return ResponseEntity.status(404).body(ex.getMessage());
+            UserModel user = service.getUserByUsername(username);
+            UserDTO userDTO = new UserDTO(user);
+            return ResponseEntity.ok(userDTO);
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+    }
+
+    // Create
+    @PostMapping
+    public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
+        UserModel created = service.create(
+                userDTO.getUserName(),
+                userDTO.getUserFullName(),
+                userDTO.getUserPassword(),
+                userDTO.getUserEmail(),
+                userDTO.getUserRole()
+        );
+
+        return ResponseEntity.ok(new UserDTO(created));
     }
 
     //Update
     @PutMapping("/{username}")
-    public ResponseEntity<?> updateUser(@PathVariable("username") String username,
-                                        @RequestBody User updatedUser) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable("username") String username,
+                                              @RequestBody UserDTO updatedUserDTO) {
         try {
-            User user = service.updateUser(username, updatedUser);
-            return ResponseEntity.ok(user);
-        } catch (UserNotFoundException ex) {
-            return ResponseEntity.status(404).body(ex.getMessage());
+            UserModel updatedUser = new UserModel();
+            updatedUser.setUserName(updatedUserDTO.getUserName());
+            updatedUser.setUserFullName(updatedUserDTO.getUserFullName());
+            updatedUser.setUserPassword(updatedUserDTO.getUserPassword());
+            updatedUser.setUserEmail(updatedUserDTO.getUserEmail());
+            updatedUser.setUserRole(updatedUserDTO.getUserRole());
+
+            UserModel user = service.updateUser(username, updatedUser);
+
+            return ResponseEntity.ok(new UserDTO(user));
+
+        } catch (ResourceNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     //Delete
     @DeleteMapping("/{username}")
-    public ResponseEntity<?> deleteUser(@PathVariable("username") String username) {
+    public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
         try {
             service.deleteUser(username);
             return ResponseEntity.ok("User deleted: " + username);
-        } catch (UserNotFoundException ex) {
+        } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(404).body(ex.getMessage());
         }
     }

@@ -1,20 +1,20 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
-import br.com.santospage.taxassistant.domain.models.Product;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.ProductModel;
 import br.com.santospage.taxassistant.domain.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
@@ -26,68 +26,73 @@ class ProductServiceTest {
     private ProductService productService;
 
     @Test
-    void shouldThrowWhenProductNotExists() {
-        // Given
-        when(repository.findByFilialAndId("D RJ 02", "000001")).thenReturn(Optional.empty());
+    void shouldReturnProductWhenExists() {
+        ProductModel product = mock(ProductModel.class);
+        when(product.getCompanyCode()).thenReturn("01");
+        when(product.getProductId()).thenReturn("000001");
+        when(product.getNameProduct()).thenReturn("PRODUCT 001");
+        when(product.isActive()).thenReturn(true);
 
-        // When / Then
-        assertThrows(
-                ProductNotFoundException.class,
-                () -> productService.findByFilialAndId("D RJ 02", "000001")
-        );
+        when(repository.findByCompanyCodeAndProductId("01", "000001"))
+                .thenReturn(Optional.of(product));
 
-        verify(repository).findByFilialAndId("D RJ 02", "000001");
+        ProductModel result = productService.findByCompanyAndId("01", "000001");
+
+        assertNotNull(result);
+        assertEquals("01", result.getCompanyCode());
+        assertEquals("000001", result.getProductId());
+        assertEquals("PRODUCT 001", result.getNameProduct());
+
+        verify(repository).findByCompanyCodeAndProductId("01", "000001");
     }
 
     @Test
-    void shouldReturnProductWhenExists() {
+    void shouldThrowWhenProductNotExists() {
         // Given
-        Product product = new Product();
-        product.setCompany("D RJ 02");
-        product.setId("000001");
-        product.setName("NOTEBOOK");
+        when(repository.findByCompanyCodeAndProductId("01", "000099")).thenReturn(Optional.empty());
 
-        when(repository.findByFilialAndId("D RJ 02", "000001"))
-                .thenReturn(Optional.of(product));
+        // When / Then
+        assertThrows(
+                ResourceNotFoundException.class,
+                () -> productService.findByCompanyAndId("01", "000099")
+        );
 
-        // When
-        Product result = productService.findByFilialAndId("D RJ 02", "000001");
-
-        // Then
-        assertNotNull(result);
-        assertEquals("D RJ 02", result.getCompany());
-        assertEquals("000001", result.getId());
-        assertEquals("NOTEBOOK", result.getName());
-
-        verify(repository).findByFilialAndId("D RJ 02", "000001");
+        verify(repository).findByCompanyCodeAndProductId("01", "000099");
     }
 
     @Test
     void shouldReturnAllProducts() {
         // Given
-        Product p1 = new Product();
-        p1.setId("P001");
-        p1.setName("Product 001");
+        ProductModel product1 = mock(ProductModel.class);
+        when(product1.isActive()).thenReturn(true);
 
-        Product p2 = new Product();
-        p2.setId("P002");
-        p2.setName("Product 002");
+        ProductModel product2 = mock(ProductModel.class);
+        when(product2.isActive()).thenReturn(true);
 
-        List<Product> products = List.of(p1, p2);
-        when(repository.findAll()).thenReturn(products);
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of(product1, product2));
 
         // When
-        List<Product> result = productService.findAll();
+        List<ProductModel> result = productService.findAll();
 
         // Then
+        assertNotNull(result);
         assertEquals(2, result.size());
+        assertTrue(result.stream().allMatch(ProductModel::isActive));
 
-        assertEquals("P001", result.get(0).getId());
-        assertEquals("Product 001", result.get(0).getName());
+        verify(repository).findAll(any(Sort.class));
+    }
 
-        assertEquals("P002", result.get(1).getId());
-        assertEquals("Product 002", result.get(1).getName());
+    @Test
+    void shouldAllProductsNotExists() {
+        // Given
+        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
 
-        verify(repository).findAll();
+        // When
+        List<ProductModel> result = productService.findAll();
+
+        // Then
+        assertTrue(result.isEmpty());
+
+        verify(repository).findAll(any(Sort.class));
     }
 }

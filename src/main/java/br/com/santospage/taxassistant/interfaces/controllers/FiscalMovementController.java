@@ -1,17 +1,15 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.FiscalMovementService;
-import br.com.santospage.taxassistant.domain.exceptions.FiscalMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.models.FiscalMovement;
+import br.com.santospage.taxassistant.domain.models.FiscalMovementModel;
+import br.com.santospage.taxassistant.interfaces.dto.FiscalMovementDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -28,8 +26,11 @@ public class FiscalMovementController {
 
     // Search all (ex: /api/fiscal-movements)
     @GetMapping
-    public ResponseEntity<List<FiscalMovement>> getAll() {
-        List<FiscalMovement> results = service.findAll();
+    public ResponseEntity<List<FiscalMovementDTO>> getAll() {
+        List<FiscalMovementDTO> results = service.findAll()
+                .stream()
+                .map(FiscalMovementDTO::new)
+                .toList();
 
         if (results.isEmpty()) {
             return ResponseEntity.noContent().build(); // Response 204
@@ -40,27 +41,20 @@ public class FiscalMovementController {
 
     // Search /api/fiscal-movements/F2D123456
     @GetMapping("/{id}")
-    public ResponseEntity<FiscalMovement> getById(
+    public ResponseEntity<FiscalMovementDTO> getById(
             @Parameter(description = "Fiscal movement ID") @PathVariable String id) {
-        try {
-            FiscalMovement fm = service.findById(id);
-            return ResponseEntity.ok(fm);
-        } catch (FiscalMovementNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        FiscalMovementModel result = service.findById(id);
+        return ResponseEntity.ok(new FiscalMovementDTO(result));
     }
 
     // Search for tableCode (ex: /api/fiscal-movements?table=SD2)
     @GetMapping("/table/{table}")
-    public ResponseEntity<List<FiscalMovement>> getByTable(
+    public ResponseEntity<List<FiscalMovementDTO>> getByTable(
             @Parameter(description = "Fiscal movement table") @PathVariable String table) {
-        try {
-            List<FiscalMovement> results = service.findByTableMovement(table);
-            return ResponseEntity.ok(results);
-        } catch (FiscalMovementNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        List<FiscalMovementModel> results = service.findByTableMovement(table);
+        List<FiscalMovementDTO> dtoList = results.stream()
+                .map(FiscalMovementDTO::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
     }
 }
-
-

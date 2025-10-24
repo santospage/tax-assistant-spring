@@ -1,8 +1,9 @@
 package br.com.santospage.taxassistant.application.services;
 
-import br.com.santospage.taxassistant.domain.exceptions.IntegratedMovementNotFoundException;
-import br.com.santospage.taxassistant.domain.models.IntegratedMovement;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.IntegratedMovementModel;
 import br.com.santospage.taxassistant.domain.repositories.IntegratedMovementRepository;
+import br.com.santospage.taxassistant.interfaces.dto.IntegratedMovementDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,20 +17,37 @@ public class IntegratedMovementService {
         this.repository = repository;
     }
 
-    public List<IntegratedMovement> getAll() {
-        List<IntegratedMovement> list = repository.findIntegratedMovements(null);
+    public List<IntegratedMovementDTO> getAll() {
+        List<IntegratedMovementModel> list = repository.findIntegratedMovements(null);
+
         if (list.isEmpty()) {
-            throw new IntegratedMovementNotFoundException("No records found.");
+            throw new ResourceNotFoundException("No records found.");
         }
-        return list;
+
+        return list.stream()
+                .map(m -> new IntegratedMovementDTO(
+                        m.companyCode(),
+                        m.taxId(),
+                        m.descriptionTax()
+                ))
+                .toList();
     }
 
-    public List<IntegratedMovement> getByCompany(String company) {
-        List<IntegratedMovement> list = repository.findIntegratedMovements(company);
+    public List<IntegratedMovementDTO> getByCompany(String company) {
+        List<IntegratedMovementModel> list = repository.findIntegratedMovements(company);
+
         if (list.isEmpty()) {
-            throw new IntegratedMovementNotFoundException("No records found for the company: "
-                                                          + company);
+            throw new ResourceNotFoundException(
+                    "No records found for the company: " + company
+            );
         }
-        return list;
+
+        return list.stream()
+                .map(m -> new IntegratedMovementDTO(
+                        m.companyCode(),
+                        m.taxId(),
+                        m.descriptionTax()
+                ))
+                .toList();
     }
 }

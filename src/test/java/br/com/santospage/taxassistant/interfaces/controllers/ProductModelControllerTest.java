@@ -1,9 +1,12 @@
 package br.com.santospage.taxassistant.interfaces.controllers;
 
 import br.com.santospage.taxassistant.application.services.ProductService;
-import br.com.santospage.taxassistant.domain.exceptions.ProductNotFoundException;
-import br.com.santospage.taxassistant.domain.models.Product;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.ProductModel;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,6 +18,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ProductController.class)
 @AutoConfigureMockMvc(addFilters = false)
-public class ProductControllerTest {
+public class ProductModelControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,28 +34,36 @@ public class ProductControllerTest {
     @MockBean
     private ProductService service;
 
+    @InjectMocks
+    private ProductController productController;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
     @Test
     void shouldGetByIdFound() throws Exception {
-        Product product = new Product();
-        product.setCompany("01");
-        product.setId("TEST001");
-        product.setName("PRODUCT TEST001");
+        ProductModel product = mock(ProductModel.class);
+        when(product.getCompanyCode()).thenReturn("01");
+        when(product.getProductId()).thenReturn("000001");
+        when(product.getNameProduct()).thenReturn("PRODUCT 001");
 
-        when(service.findByFilialAndId("01", "TEST001")).thenReturn(product);
+        when(service.findByCompanyAndId("01", "000001")).thenReturn(product);
 
         mockMvc.perform(get("/api/products")
                                 .param("company", "01")
-                                .param("id", "TEST001")
+                                .param("id", "000001")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value("TEST001"))
-                .andExpect(jsonPath("$.name").value("PRODUCT TEST001"));
+                .andExpect(jsonPath("$.productId").value("000001"))
+                .andExpect(jsonPath("$.nameProduct").value("PRODUCT 001"));
     }
 
     @Test
     void shouldGetByIdNotFound() throws Exception {
-        when(service.findByFilialAndId("01", "TEST999"))
-                .thenThrow(new ProductNotFoundException(""));
+        when(service.findByCompanyAndId("01", "TEST999"))
+                .thenThrow(new ResourceNotFoundException("Product not found: TEST999"));
 
         mockMvc.perform(get("/api/products")
                                 .param("company", "01")
@@ -62,17 +74,17 @@ public class ProductControllerTest {
 
     @Test
     void shouldGetAllSuccess() throws Exception {
-        Product product1 = new Product();
-        product1.setCompany("01");
-        product1.setId("TEST001");
-        product1.setName("PRODUCT TEST001");
+        ProductModel product1 = mock(ProductModel.class);
+        when(product1.getCompanyCode()).thenReturn("01");
+        when(product1.getProductId()).thenReturn("000001");
+        when(product1.getNameProduct()).thenReturn("PRODUCT 001");
 
-        Product product2 = new Product();
-        product2.setCompany("01");
-        product2.setId("TEST002");
-        product2.setName("PRODUCT TEST002");
+        ProductModel product2 = mock(ProductModel.class);
+        when(product2.getCompanyCode()).thenReturn("01");
+        when(product2.getProductId()).thenReturn("000002");
+        when(product2.getNameProduct()).thenReturn("PRODUCT 002");
 
-        List<Product> products = Arrays.asList(product1, product2);
+        List<ProductModel> products = Arrays.asList(product1, product2);
 
         // Mock
         when(service.findAll()).thenReturn(products);
@@ -80,10 +92,10 @@ public class ProductControllerTest {
         mockMvc.perform(get("/api/products")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("TEST001"))
-                .andExpect(jsonPath("$[0].name").value("PRODUCT TEST001"))
-                .andExpect(jsonPath("$[1].id").value("TEST002"))
-                .andExpect(jsonPath("$[1].name").value("PRODUCT TEST002"));
+                .andExpect(jsonPath("$[0].productId").value("000001"))
+                .andExpect(jsonPath("$[0].nameProduct").value("PRODUCT 001"))
+                .andExpect(jsonPath("$[1].productId").value("000002"))
+                .andExpect(jsonPath("$[1].nameProduct").value("PRODUCT 002"));
     }
 
     @Test

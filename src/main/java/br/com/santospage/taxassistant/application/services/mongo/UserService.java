@@ -1,9 +1,9 @@
 package br.com.santospage.taxassistant.application.services.mongo;
 
 import br.com.santospage.taxassistant.domain.enums.UserRole;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
 import br.com.santospage.taxassistant.domain.exceptions.UserAlreadyExistsException;
-import br.com.santospage.taxassistant.domain.exceptions.UserNotFoundException;
-import br.com.santospage.taxassistant.domain.models.mongo.User;
+import br.com.santospage.taxassistant.domain.models.mongo.UserModel;
 import br.com.santospage.taxassistant.domain.repositories.mongo.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,51 +21,51 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User create(String user, String fullName, String password,
-                       String email, UserRole role) {
+    public UserModel create(String user, String fullName, String password,
+                            String email, UserRole role) {
 
         if (repository.existsByUserName(user)) {
             throw new UserAlreadyExistsException(user);
         }
 
-        User newUser = new User();
+        UserModel newUser = new UserModel();
         newUser.setUserName(user);
-        newUser.setFullName(fullName);
-        newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setEmail(email);
-        newUser.setRole(role);
+        newUser.setUserFullName(fullName);
+        newUser.setUserPassword(passwordEncoder.encode(password));
+        newUser.setUserEmail(email);
+        newUser.setUserRole(role);
 
         return repository.save(newUser);
     }
 
-    public List<User> getAllUsers() {
+    public List<UserModel> getAllUsers() {
         return repository.findAll();
     }
 
-    public User getUserByUsername(String user) {
+    public UserModel getUserByUsername(String user) {
         return repository.findByUserName(user)
-                .orElseThrow(() -> new UserNotFoundException(user));
+                .orElseThrow(() -> new ResourceNotFoundException(user));
     }
 
-    public User updateUser(String username, User updatedUser) {
-        User existingUser = repository.findByUserName(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+    public UserModel updateUser(String username, UserModel updatedUser) {
+        UserModel existingUser = repository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException(username));
 
-        existingUser.setFullName(updatedUser.getFullName());
+        existingUser.setUserFullName(updatedUser.getUserFullName());
 
-        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        if (updatedUser.getUserPassword() != null && !updatedUser.getUserPassword().isEmpty()) {
+            existingUser.setUserPassword(passwordEncoder.encode(updatedUser.getUserPassword()));
         }
 
-        existingUser.setEmail(updatedUser.getEmail());
-        existingUser.setRole(updatedUser.getRole());
+        existingUser.setUserEmail(updatedUser.getUserEmail());
+        existingUser.setUserRole(updatedUser.getUserRole());
 
         return repository.save(existingUser);
     }
 
     public void deleteUser(String username) {
-        User existingUser = repository.findByUserName(username)
-                .orElseThrow(() -> new UserNotFoundException(username));
+        UserModel existingUser = repository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException(username));
         repository.delete(existingUser);
     }
 }

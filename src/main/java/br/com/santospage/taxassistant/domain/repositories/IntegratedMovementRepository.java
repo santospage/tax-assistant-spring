@@ -1,6 +1,6 @@
 package br.com.santospage.taxassistant.domain.repositories;
 
-import br.com.santospage.taxassistant.domain.models.IntegratedMovement;
+import br.com.santospage.taxassistant.domain.models.IntegratedMovementModel;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -14,12 +14,12 @@ public class IntegratedMovementRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public List<IntegratedMovement> findIntegratedMovements(String company) {
+    public List<IntegratedMovementModel> findIntegratedMovements(String company) {
         String sql = """
                 SELECT DISTINCT
-                    F2B.F2B_FILIAL AS company,
-                    F2B.F2B_TRIB AS trib,
-                    F2C.F2C_DESC AS description
+                    F2B.F2B_FILIAL AS companyCode,
+                    F2B.F2B_TRIB AS taxId,
+                    F2C.F2C_DESC AS descriptionTax
                 FROM F2BT10 F2B
                 INNER JOIN F2ET10 F2E
                     ON F2E.F2E_TRIB = F2B.F2B_TRIB AND F2E.D_E_L_E_T_ = ' '
@@ -45,7 +45,7 @@ public class IntegratedMovementRepository {
         List<Object[]> rawList = query.getResultList();
 
         return rawList.stream()
-                .map(o -> new IntegratedMovement(
+                .map(o -> new IntegratedMovementModel(
                         (String) o[0],
                         (String) o[1],
                         (String) o[2]

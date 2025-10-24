@@ -1,9 +1,9 @@
 package br.com.santospage.taxassistant.application.services.mongo;
 
 import br.com.santospage.taxassistant.domain.enums.UserRole;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
 import br.com.santospage.taxassistant.domain.exceptions.UserAlreadyExistsException;
-import br.com.santospage.taxassistant.domain.exceptions.UserNotFoundException;
-import br.com.santospage.taxassistant.domain.models.mongo.User;
+import br.com.santospage.taxassistant.domain.models.mongo.UserModel;
 import br.com.santospage.taxassistant.domain.repositories.mongo.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,20 +38,20 @@ class UserServiceTest {
 
     @Test
     void createUser_success() {
-        User user = new User();
+        UserModel user = new UserModel();
         user.setUserName("user01");
 
         when(passwordEncoder.encode(any(CharSequence.class))).thenReturn("encodedPassword");
 
         when(repository.existsByUserName("user01")).thenReturn(false);
-        when(repository.save(any(User.class))).thenReturn(user);
+        when(repository.save(any(UserModel.class))).thenReturn(user);
 
-        User result = service.create(
+        UserModel result = service.create(
                 "user01", "User 01", "123", "salt", UserRole.ADMIN
         );
 
         assertEquals("user01", result.getUserName());
-        verify(repository, times(1)).save(any(User.class));
+        verify(repository, times(1)).save(any(UserModel.class));
         verify(passwordEncoder, times(1)).encode("123");
     }
 
@@ -64,19 +64,19 @@ class UserServiceTest {
                 () -> service.create("user01", "User 01", "123", "salt", UserRole.ADMIN)
         );
 
-        verify(repository, never()).save(any(User.class));
+        verify(repository, never()).save(any(UserModel.class));
     }
 
     @Test
     void getAllUsers_success() {
-        User u1 = new User();
+        UserModel u1 = new UserModel();
         u1.setUserName("user01");
-        User u2 = new User();
+        UserModel u2 = new UserModel();
         u2.setUserName("user02");
 
         when(repository.findAll()).thenReturn(List.of(u1, u2));
 
-        List<User> result = service.getAllUsers();
+        List<UserModel> result = service.getAllUsers();
 
         assertEquals(2, result.size());
         assertEquals("user01", result.get(0).getUserName());
@@ -84,12 +84,12 @@ class UserServiceTest {
 
     @Test
     void getUserByUsername_success() {
-        User u = new User();
+        UserModel u = new UserModel();
         u.setUserName("user01");
 
         when(repository.findByUserName("user01")).thenReturn(Optional.of(u));
 
-        User result = service.getUserByUsername("user01");
+        UserModel result = service.getUserByUsername("user01");
 
         assertEquals("user01", result.getUserName());
     }
@@ -99,27 +99,27 @@ class UserServiceTest {
         when(repository.findByUserName("user01")).thenReturn(Optional.empty());
 
         assertThrows(
-                UserNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> service.getUserByUsername("user01")
         );
     }
 
     @Test
     void updateUser_success() {
-        User existing = new User();
+        UserModel existing = new UserModel();
         existing.setUserName("user01");
 
-        User updated = new User();
-        updated.setFullName("Novo Nome");
-        updated.setEmail("novo@example.com");
+        UserModel updated = new UserModel();
+        updated.setUserFullName("Novo Nome");
+        updated.setUserEmail("novo@example.com");
 
         when(repository.findByUserName("user01")).thenReturn(Optional.of(existing));
-        when(repository.save(any(User.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(repository.save(any(UserModel.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        User result = service.updateUser("user01", updated);
+        UserModel result = service.updateUser("user01", updated);
 
-        assertEquals("Novo Nome", result.getFullName());
-        assertEquals("novo@example.com", result.getEmail());
+        assertEquals("Novo Nome", result.getUserFullName());
+        assertEquals("novo@example.com", result.getUserEmail());
         verify(repository).save(existing);
     }
 
@@ -128,14 +128,14 @@ class UserServiceTest {
         when(repository.findByUserName("user01")).thenReturn(Optional.empty());
 
         assertThrows(
-                UserNotFoundException.class,
-                () -> service.updateUser("user01", new User())
+                ResourceNotFoundException.class,
+                () -> service.updateUser("user01", new UserModel())
         );
     }
 
     @Test
     void deleteUser_success() {
-        User existing = new User();
+        UserModel existing = new UserModel();
         existing.setUserName("user01");
 
         when(repository.findByUserName("user01")).thenReturn(Optional.of(existing));
@@ -150,11 +150,11 @@ class UserServiceTest {
         when(repository.findByUserName("user01")).thenReturn(Optional.empty());
 
         assertThrows(
-                UserNotFoundException.class,
+                ResourceNotFoundException.class,
                 () -> service.deleteUser("user01")
         );
 
-        verify(repository, never()).delete(any(User.class));
+        verify(repository, never()).delete(any(UserModel.class));
     }
 }
 

@@ -1,11 +1,11 @@
 package br.com.santospage.taxassistant.application.services.mongo;
 
-import br.com.santospage.taxassistant.domain.models.mongo.User;
+import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
+import br.com.santospage.taxassistant.domain.models.mongo.UserModel;
 import br.com.santospage.taxassistant.domain.repositories.mongo.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,14 +18,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = repository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    public UserDetails loadUserByUsername(String username) throws ResourceNotFoundException {
+        UserModel user = repository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
-        var authority = new SimpleGrantedAuthority("ROLE_" + user.getRole()); // se role já for String
+        var authority = new SimpleGrantedAuthority("ROLE_" + user.getUserRole());
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUserName())
-                .password(user.getPassword())
+                .password(user.getUserPassword())
                 .authorities(authority)
                 .build();
     }

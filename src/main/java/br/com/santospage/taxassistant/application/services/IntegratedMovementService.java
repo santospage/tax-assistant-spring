@@ -1,7 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
-import br.com.santospage.taxassistant.domain.models.IntegratedMovement;
+import br.com.santospage.taxassistant.domain.models.IntegratedMovementModel;
 import br.com.santospage.taxassistant.domain.repositories.IntegratedMovementRepository;
 import br.com.santospage.taxassistant.interfaces.dto.IntegratedMovementDTO;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class IntegratedMovementService {
     }
 
     public List<IntegratedMovementDTO> getAll() {
-        List<IntegratedMovement> list = repository.findIntegratedMovements(null);
+        List<IntegratedMovementModel> list = repository.findIntegratedMovements(null);
 
         if (list.isEmpty()) {
             throw new ResourceNotFoundException("No records found.");
@@ -34,7 +34,7 @@ public class IntegratedMovementService {
     }
 
     public List<IntegratedMovementDTO> getByCompany(String company) {
-        List<IntegratedMovement> list = repository.findIntegratedMovements(company);
+        List<IntegratedMovementModel> list = repository.findIntegratedMovements(company);
 
         if (list.isEmpty()) {
             throw new ResourceNotFoundException(

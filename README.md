@@ -84,21 +84,18 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   │   ├── UserRole.java
 │   │                       │   │   └── CustomerType.java
 │   │                       │   ├── exceptions
-│   │                       │   │   ├── CustomerNotFoundException.java
-│   │                       │   │   ├── FiscalMovementNotFoundException.java
-│   │                       │   │   ├── IntegratedMovementNotFoundException.java
-│   │                       │   │   ├── SalesMovementNotFoundException.java
-│   │                       │   │   ├── ProductNotFoundException.java
+│   │                       │   │   ├── GlobalExceptionHandler.java
+│   │                       │   │   ├── ResourceNotFoundException.java
 │   │                       │   │   ├── UserAlreadyExistsException.java
 │   │                       │   │   └── UserNotFoundException.java
 │   │                       │   ├── models
 │   │                       │   │   ├── mongo
 │   │                       │   │   │   └── User.java
-│   │                       │   │   ├── Customer.java
-│   │                       │   │   ├── FiscalMovement.java
-│   │                       │   │   ├── IntegratedMovement.java
-│   │                       │   │   ├── SalesMovement.java
-│   │                       │   │   └── Product.java
+│   │                       │   │   ├── CustomerModel.java
+│   │                       │   │   ├── FiscalMovementModel.java
+│   │                       │   │   ├── IntegratedMovementModel.java
+│   │                       │   │   ├── SalesMovementModel.java
+│   │                       │   │   └── ProductModel.java
 │   │                       │   └── repositories
 │   │                       │       ├── mongo
 │   │                       │       │   └── UserRepository.java
@@ -113,15 +110,23 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── JwtTokenProvider.java
 │   │                       │       └── SecurityConfig.java
 │   │                       ├── interfaces
-│   │                       │   └── controllers
+│   │                       │   ├── controllers
+│   │                       │   │   ├── mongo
+│   │                       │   │   │   └── UserController.java
+│   │                       │   │   ├── AuthController.java
+│   │                       │   │   ├── CustomerController.java
+│   │                       │   │   ├── FiscalMovementController.java
+│   │                       │   │   ├── IntegratedMovementController.java
+│   │                       │   │   ├── SalesMovementController.java
+│   │                       │   │   └── ProductController.java
+│   │                       │   └── dto
 │   │                       │       ├── mongo
-│   │                       │       │   └── UserController.java
-│   │                       │       ├── AuthController.java
-│   │                       │       ├── CustomerController.java
-│   │                       │       ├── FiscalMovementController.java
-│   │                       │       ├── IntegratedMovementController.java
-│   │                       │       ├── SalesMovementController.java
-│   │                       │       └── ProductController.java
+│   │                       │       │   └── UserDTO.java
+│   │                       │       ├── CustomerDTO.java
+│   │                       │       ├── FiscalMovementDTO.java
+│   │                       │       ├── IntegratedMovementDTO.java
+│   │                       │       ├── SalesMovementDTO.java
+│   │                       │       └── ProductDTO.java
 │   │                       └── TaxAssistantApplication.java
 ├── test
 │   └── java
@@ -144,13 +149,13 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │                       └── interfaces
 │                          └── controllers
 │                               ├── mongo
-│                               │   └── UserControllerTest.java
+│                               │   └── UserModelControllerTest.java
 │                               ├── AuthControllerTest.java
-│                               ├── CustomerControllerTest.java
-│                               ├── FiscalMovementControllerTest.java
-│                               ├── IntegratedMovementControllerTest.java
-│                               ├── SalesMovementControllerTest.java
-│                               └── ProductControllerTest.java
+│                               ├── CustomerModelControllerTest.java
+│                               ├── FiscalMovementModelControllerTest.java
+│                               ├── IntegratedMovementModelControllerTest.java
+│                               ├── SalesMovementModelControllerTest.java
+│                               └── ProductModelControllerTest.java
 ├── assets
 │   ├── auth.png
 │   ├── home.png

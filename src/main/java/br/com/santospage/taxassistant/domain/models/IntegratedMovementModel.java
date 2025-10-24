@@ -1,6 +1,6 @@
 package br.com.santospage.taxassistant.domain.models;
 
-public record IntegratedMovement(
+public record IntegratedMovementModel(
         String companyCode,
         String taxId,
         String descriptionTax) {

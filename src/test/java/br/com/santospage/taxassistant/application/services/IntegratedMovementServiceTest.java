@@ -1,7 +1,7 @@
 package br.com.santospage.taxassistant.application.services;
 
 import br.com.santospage.taxassistant.domain.exceptions.ResourceNotFoundException;
-import br.com.santospage.taxassistant.domain.models.IntegratedMovement;
+import br.com.santospage.taxassistant.domain.models.IntegratedMovementModel;
 import br.com.santospage.taxassistant.domain.repositories.IntegratedMovementRepository;
 import br.com.santospage.taxassistant.interfaces.dto.IntegratedMovementDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,7 @@ class IntegratedMovementServiceTest {
     @Test
     void getAll_shouldReturnList_whenRepositoryHasData() {
         // Arrange
-        IntegratedMovement movement = new IntegratedMovement(
+        IntegratedMovementModel movement = new IntegratedMovementModel(
                 "001",           // companyCode
                 "TX123",         // taxId
                 "Description 1"  // descriptionTax
@@ -70,7 +70,7 @@ class IntegratedMovementServiceTest {
     void getByCompany_shouldReturnList_whenRepositoryHasData() {
         // Arrange
         String company = "ABC";
-        IntegratedMovement movement = new IntegratedMovement(
+        IntegratedMovementModel movement = new IntegratedMovementModel(
                 "ABC",
                 "TX456",
                 "Description 2"

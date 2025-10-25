@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    
+
     private final AuthenticationManager authManager;
     private final JwtTokenProvider tokenProvider;
 
@@ -27,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthRequest req) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest req) {
         try {
             Authentication auth = authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(req.getUser(), req.getPassword())
@@ -42,10 +42,11 @@ public class AuthController {
                             .orElse("USER")
             );
 
-
             return ResponseEntity.ok(Map.of("token", token));
         } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity
+                    .status(401)
+                    .body(Map.of("error", "Invalid credentials"));
         }
     }
 

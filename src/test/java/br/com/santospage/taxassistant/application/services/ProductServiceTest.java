@@ -8,7 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,10 @@ class ProductServiceTest {
         when(repository.findByCompanyCodeAndProductId("01", "000001"))
                 .thenReturn(Optional.of(product));
 
-        ProductModel result = productService.findByCompanyAndId("01", "000001");
+        ProductModel result = productService.findByCompanyAndId(
+                "01"
+                , "000001"
+        );
 
         assertNotNull(result);
         assertEquals("01", result.getCompanyCode());
@@ -49,7 +54,8 @@ class ProductServiceTest {
     @Test
     void shouldThrowWhenProductNotExists() {
         // Given
-        when(repository.findByCompanyCodeAndProductId("01", "000099")).thenReturn(Optional.empty());
+        when(repository.findByCompanyCodeAndProductId("01", "000099"))
+                .thenReturn(Optional.empty());
 
         // When / Then
         assertThrows(
@@ -60,7 +66,6 @@ class ProductServiceTest {
         verify(repository).findByCompanyCodeAndProductId("01", "000099");
     }
 
-    @Test
     void shouldReturnAllProducts() {
         // Given
         ProductModel product1 = mock(ProductModel.class);
@@ -69,30 +74,37 @@ class ProductServiceTest {
         ProductModel product2 = mock(ProductModel.class);
         when(product2.isActive()).thenReturn(true);
 
-        when(repository.findAll(any(Sort.class))).thenReturn(List.of(product1, product2));
+        List<ProductModel> products = List.of(product1, product2);
+        Page<ProductModel> page = new PageImpl<>(products);
+
+        // Mock
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<ProductModel> result = productService.findAll();
+        Page<ProductModel> result = productService.findAll(1, 10);
 
         // Then
         assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.stream().allMatch(ProductModel::isActive));
+        assertEquals(2, result.getContent().size());
+        assertTrue(result.getContent().stream().allMatch(ProductModel::isActive));
 
-        verify(repository).findAll(any(Sort.class));
+        verify(repository).findAll(any(Pageable.class));
     }
 
     @Test
     void shouldAllProductsNotExists() {
+        List<ProductModel> products = List.of();
+        Page<ProductModel> page = new PageImpl<>(products);
+
         // Given
-        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<ProductModel> result = productService.findAll();
+        Page<ProductModel> result = productService.findAll(1, 10);
 
         // Then
         assertTrue(result.isEmpty());
 
-        verify(repository).findAll(any(Sort.class));
+        verify(repository).findAll(any(Pageable.class));
     }
 }

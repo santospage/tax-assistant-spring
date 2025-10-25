@@ -4,6 +4,7 @@ import br.com.santospage.taxassistant.application.services.CustomerService;
 import br.com.santospage.taxassistant.domain.models.CustomerModel;
 import br.com.santospage.taxassistant.interfaces.dto.CustomerDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -26,17 +26,21 @@ public class CustomerController {
 
     // Search all customers
     @GetMapping
-    public ResponseEntity<List<CustomerDTO>> getAll() {
-        List<CustomerDTO> customers = service.findAll()
-                .stream()
-                .map(CustomerDTO::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<CustomerDTO>> getAll(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
 
-        if (customers.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Response 204
+        Page<CustomerModel> customerPage = service.findAll(page, size);
+
+        if (customerPage.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
         }
 
-        return ResponseEntity.ok(customers); // Response 200
+        List<CustomerDTO> customers = customerPage.stream()
+                .map(CustomerDTO::new)
+                .toList();
+
+        return ResponseEntity.ok(customers); // 200
     }
 
     // Search customer by ID

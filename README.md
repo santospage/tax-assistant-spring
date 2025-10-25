@@ -86,11 +86,10 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   ├── exceptions
 │   │                       │   │   ├── GlobalExceptionHandler.java
 │   │                       │   │   ├── ResourceNotFoundException.java
-│   │                       │   │   ├── UserAlreadyExistsException.java
-│   │                       │   │   └── UserNotFoundException.java
+│   │                       │   │   └── UserAlreadyExistsException.java
 │   │                       │   ├── models
 │   │                       │   │   ├── mongo
-│   │                       │   │   │   └── User.java
+│   │                       │   │   │   └── UserModel.java
 │   │                       │   │   ├── CustomerModel.java
 │   │                       │   │   ├── FiscalMovementModel.java
 │   │                       │   │   ├── IntegratedMovementModel.java

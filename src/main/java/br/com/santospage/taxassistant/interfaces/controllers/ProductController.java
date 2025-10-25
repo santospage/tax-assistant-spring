@@ -5,6 +5,7 @@ import br.com.santospage.taxassistant.domain.models.ProductModel;
 import br.com.santospage.taxassistant.interfaces.dto.ProductDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/products")
@@ -27,17 +27,21 @@ public class ProductController {
 
     // Search all products
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAll() {
-        List<ProductDTO> products = service.findAll()
-                .stream()
-                .map(ProductDTO::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<ProductDTO>> getAll(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
 
-        if (products.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Response 204
+        Page<ProductModel> productPage = service.findAll(page, size);
+
+        if (productPage.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
         }
 
-        return ResponseEntity.ok(products); // Response 200
+        List<ProductDTO> products = productPage.stream()
+                .map(ProductDTO::new)
+                .toList();
+
+        return ResponseEntity.ok(products); // 200
     }
 
     // Search product by ID

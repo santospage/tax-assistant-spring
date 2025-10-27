@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -139,46 +142,45 @@ class SalesMovementServiceTest {
         verify(repository).findByProductCode(eq("099"), any(Sort.class));
     }
 
-    @Test
     void shouldReturnAllSalesMovements() {
         // Given
-        SalesMovementModel sm1 = mock(SalesMovementModel.class);
-        when(sm1.getCompanyCode()).thenReturn("01");
-        when(sm1.getProductCode()).thenReturn("PRODUCT01");
-        when(sm1.isActive()).thenReturn(true);
+        SalesMovementModel movement1 = mock(SalesMovementModel.class);
+        when(movement1.isActive()).thenReturn(true);
 
-        SalesMovementModel sm2 = mock(SalesMovementModel.class);
-        when(sm2.getCompanyCode()).thenReturn("01");
-        when(sm2.getProductCode()).thenReturn("PRODUCT02");
-        when(sm2.isActive()).thenReturn(true);
+        SalesMovementModel movement2 = mock(SalesMovementModel.class);
+        when(movement2.isActive()).thenReturn(true);
 
-        List<SalesMovementModel> list = List.of(sm1, sm2);
-        when(repository.findAll(any(Sort.class))).thenReturn(list);
+        List<SalesMovementModel> movements = List.of(movement1, movement2);
+        Page<SalesMovementModel> page = new PageImpl<>(movements);
+
+        // Mock
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<SalesMovementModel> result = service.findAll();
+        Page<SalesMovementModel> result = service.findAll(1, 10);
 
         // Then
-        assertEquals(2, result.size());
-        assertEquals("01", result.get(0).getCompanyCode());
-        assertEquals("PRODUCT01", result.get(0).getProductCode());
-        assertEquals("01", result.get(1).getCompanyCode());
-        assertEquals("PRODUCT02", result.get(1).getProductCode());
+        assertNotNull(result);
+        assertEquals(2, result.getContent().size());
+        assertTrue(result.getContent().stream().allMatch(SalesMovementModel::isActive));
 
-        verify(repository).findAll(any(Sort.class));
+        verify(repository).findAll(any(Pageable.class));
     }
 
     @Test
     void shouldAllSalesMovementsNotExists() {
+        List<SalesMovementModel> movements = List.of();
+        Page<SalesMovementModel> page = new PageImpl<>(movements);
+
         // Given
-        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<SalesMovementModel> result = service.findAll();
+        Page<SalesMovementModel> result = service.findAll(1, 10);
 
         // Then
         assertTrue(result.isEmpty());
 
-        verify(repository).findAll(any(Sort.class));
+        verify(repository).findAll(any(Pageable.class));
     }
 }

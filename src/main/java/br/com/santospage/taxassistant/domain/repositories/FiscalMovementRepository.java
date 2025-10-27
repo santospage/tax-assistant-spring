@@ -12,7 +12,4 @@ public interface FiscalMovementRepository extends JpaRepository<FiscalMovementMo
     @NotNull Optional<FiscalMovementModel> findById(@NotNull String id);
 
     List<FiscalMovementModel> findByMovementTable(String movementTable, Sort sort);
-
-    @NotNull
-    List<FiscalMovementModel> findAll();
 }

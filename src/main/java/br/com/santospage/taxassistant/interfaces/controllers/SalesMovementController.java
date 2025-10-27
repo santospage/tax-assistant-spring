@@ -5,11 +5,9 @@ import br.com.santospage.taxassistant.domain.models.SalesMovementModel;
 import br.com.santospage.taxassistant.interfaces.dto.SalesMovementDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,19 +23,23 @@ public class SalesMovementController {
 
     // Search all (ex: /api/sales-movements)
     @GetMapping
-    public ResponseEntity<List<SalesMovementDTO>> getAll() {
-        List<SalesMovementDTO> results = salesMovementService.findAll()
-                .stream()
+    public ResponseEntity<List<SalesMovementDTO>> getAll(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+
+        Page<SalesMovementModel> salesPage = salesMovementService.findAll(page, size);
+
+        if (salesPage.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+
+        List<SalesMovementDTO> movements = salesPage.stream()
                 .map(SalesMovementDTO::new)
                 .toList();
 
-        if (results.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Response 204
-        }
-
-        return ResponseEntity.ok(results); // Response 200
+        return ResponseEntity.ok(movements); // 200
     }
-
+    
     // Search /api/sales-movements/F2D123456
     @GetMapping("/{id}")
     public ResponseEntity<SalesMovementDTO> getById(

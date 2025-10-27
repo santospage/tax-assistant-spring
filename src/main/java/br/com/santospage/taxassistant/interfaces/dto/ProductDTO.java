@@ -29,6 +29,7 @@ public class ProductDTO {
 
     // Getters
     public String getCompanyCode() {
+
         return companyCode;
     }
 

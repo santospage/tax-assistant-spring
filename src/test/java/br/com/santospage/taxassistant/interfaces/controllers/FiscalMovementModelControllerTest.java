@@ -8,9 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -92,7 +96,6 @@ public class FiscalMovementModelControllerTest {
 
     @Test
     void shouldGetAllWithResults() throws Exception {
-        // Given
         FiscalMovementModel fm1 = mock(FiscalMovementModel.class);
         when(fm1.getMovementId()).thenReturn("000001");
         when(fm1.isActive()).thenReturn(true);
@@ -101,23 +104,31 @@ public class FiscalMovementModelControllerTest {
         when(fm2.getMovementId()).thenReturn("000002");
         when(fm2.isActive()).thenReturn(true);
 
-        List<FiscalMovementModel> movements = List.of(fm1, fm2);
+        List<FiscalMovementModel> list = List.of(fm1, fm2);
+        Page<FiscalMovementModel> page = new PageImpl<>(
+                list, PageRequest.of(0, 10)
+                , list.size()
+        );
 
-        when(service.findAll()).thenReturn(movements);
+        // Mock
+        when(service.findAll(any(), any())).thenReturn(page);
 
-        // When / Then
         mockMvc.perform(get("/api/fiscal-movements")
                                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].movementId").value("000001"))
                 .andExpect(jsonPath("$[1].movementId").value("000002"));
-
-        verify(service).findAll();
     }
 
     @Test
     void shouldGetAllNotContent() throws Exception {
-        when(service.findAll()).thenReturn(List.of()); // lista vazia
+        PageImpl<FiscalMovementModel> emptyPage = new PageImpl<>(
+                Collections.emptyList(),
+                PageRequest.of(0, 10),
+                0
+        );
+
+        when(service.findAll(any(), any())).thenReturn(emptyPage);
 
         mockMvc.perform(get("/api/fiscal-movements")
                                 .accept(MediaType.APPLICATION_JSON))

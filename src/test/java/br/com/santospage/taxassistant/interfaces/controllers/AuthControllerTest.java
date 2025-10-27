@@ -77,6 +77,6 @@ class AuthControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(requestBody))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Invalid credentials"));
+                .andExpect(content().json("{\"error\":\"Invalid credentials\"}"));
     }
 }

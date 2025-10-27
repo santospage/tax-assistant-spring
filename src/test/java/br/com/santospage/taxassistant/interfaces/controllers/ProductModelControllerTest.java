@@ -11,13 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,19 +78,18 @@ public class ProductModelControllerTest {
     @Test
     void shouldGetAllSuccess() throws Exception {
         ProductModel product1 = mock(ProductModel.class);
-        when(product1.getCompanyCode()).thenReturn("01");
         when(product1.getProductId()).thenReturn("000001");
         when(product1.getNameProduct()).thenReturn("PRODUCT 001");
 
         ProductModel product2 = mock(ProductModel.class);
-        when(product2.getCompanyCode()).thenReturn("01");
         when(product2.getProductId()).thenReturn("000002");
         when(product2.getNameProduct()).thenReturn("PRODUCT 002");
 
-        List<ProductModel> products = Arrays.asList(product1, product2);
+        List<ProductModel> list = List.of(product1, product2);
+        Page<ProductModel> page = new PageImpl<>(list, PageRequest.of(0, 10), list.size());
 
         // Mock
-        when(service.findAll()).thenReturn(products);
+        when(service.findAll(any(), any())).thenReturn(page);
 
         mockMvc.perform(get("/api/products")
                                 .accept(MediaType.APPLICATION_JSON))
@@ -100,7 +102,13 @@ public class ProductModelControllerTest {
 
     @Test
     void shouldGetAllNoContent() throws Exception {
-        when(service.findAll()).thenReturn(Collections.emptyList());
+        PageImpl<ProductModel> emptyPage = new PageImpl<>(
+                Collections.emptyList(),
+                PageRequest.of(0, 10),
+                0
+        );
+
+        when(service.findAll(any(), any())).thenReturn(emptyPage);
 
         mockMvc.perform(get("/api/products")
                                 .accept(MediaType.APPLICATION_JSON))

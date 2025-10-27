@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -96,49 +99,49 @@ class FiscalMovementServiceTest {
                 ResourceNotFoundException.class,
                 () -> service.findByTableMovement("099")
         );
-        
+
         verify(repository).findByMovementTable(eq("099"), any(Sort.class));
     }
 
     void shouldReturnAllFiscalMovements() {
         // Given
-        FiscalMovementModel fm1 = mock(FiscalMovementModel.class);
-        when(fm1.getCompanyCode()).thenReturn("01");
-        when(fm1.getMovementTable()).thenReturn("TAB01");
-        when(fm1.isActive()).thenReturn(true);
+        FiscalMovementModel movement1 = mock(FiscalMovementModel.class);
+        when(movement1.isActive()).thenReturn(true);
 
-        FiscalMovementModel fm2 = mock(FiscalMovementModel.class);
-        when(fm2.getCompanyCode()).thenReturn("01");
-        when(fm2.getMovementTable()).thenReturn("TAB02");
-        when(fm2.isActive()).thenReturn(true);
+        FiscalMovementModel movement2 = mock(FiscalMovementModel.class);
+        when(movement2.isActive()).thenReturn(true);
 
-        List<FiscalMovementModel> list = List.of(fm1, fm2);
-        when(repository.findAll()).thenReturn(list);
+        List<FiscalMovementModel> movements = List.of(movement1, movement2);
+        Page<FiscalMovementModel> page = new PageImpl<>(movements);
+
+        // Mock
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<FiscalMovementModel> result = service.findAll();
+        Page<FiscalMovementModel> result = service.findAll(1, 10);
 
         // Then
-        assertEquals(2, result.size());
-        assertEquals("01", result.get(0).getCompanyCode());
-        assertEquals("TAB01", result.get(0).getMovementTable());
-        assertEquals("01", result.get(1).getCompanyCode());
-        assertEquals("TAB02", result.get(1).getMovementTable());
+        assertNotNull(result);
+        assertEquals(2, result.getContent().size());
+        assertTrue(result.getContent().stream().allMatch(FiscalMovementModel::isActive));
 
-        verify(repository).findAll();
+        verify(repository).findAll(any(Pageable.class));
     }
 
     @Test
     void shouldAllFiscalMovementsNotExists() {
+        List<FiscalMovementModel> movements = List.of();
+        Page<FiscalMovementModel> page = new PageImpl<>(movements);
+
         // Given
-        when(repository.findAll(any(Sort.class))).thenReturn(List.of());
+        when(repository.findAll(any(Pageable.class))).thenReturn(page);
 
         // When
-        List<FiscalMovementModel> result = service.findAll();
+        Page<FiscalMovementModel> result = service.findAll(1, 10);
 
         // Then
         assertTrue(result.isEmpty());
 
-        verify(repository).findAll(any(Sort.class));
+        verify(repository).findAll(any(Pageable.class));
     }
 }

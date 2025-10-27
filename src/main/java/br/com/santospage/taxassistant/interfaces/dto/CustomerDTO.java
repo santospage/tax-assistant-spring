@@ -60,6 +60,7 @@ public class CustomerDTO {
     }
 
     public String getTypeCustomer() {
+
         return typeCustomer;
     }
 

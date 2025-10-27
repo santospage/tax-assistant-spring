@@ -5,11 +5,9 @@ import br.com.santospage.taxassistant.domain.models.FiscalMovementModel;
 import br.com.santospage.taxassistant.interfaces.dto.FiscalMovementDTO;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,17 +24,21 @@ public class FiscalMovementController {
 
     // Search all (ex: /api/fiscal-movements)
     @GetMapping
-    public ResponseEntity<List<FiscalMovementDTO>> getAll() {
-        List<FiscalMovementDTO> results = service.findAll()
-                .stream()
+    public ResponseEntity<List<FiscalMovementDTO>> getAll(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+
+        Page<FiscalMovementModel> fiscalPage = service.findAll(page, size);
+
+        if (fiscalPage.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+
+        List<FiscalMovementDTO> movements = fiscalPage.stream()
                 .map(FiscalMovementDTO::new)
                 .toList();
 
-        if (results.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Response 204
-        }
-
-        return ResponseEntity.ok(results); // Response 200
+        return ResponseEntity.ok(movements); // 200
     }
 
     // Search /api/fiscal-movements/F2D123456

@@ -11,13 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,21 +79,18 @@ class CustomerModelControllerTest {
     @Test
     void shouldGetAllSuccess() throws Exception {
         CustomerModel customer1 = mock(CustomerModel.class);
-        when(customer1.getCompanyCode()).thenReturn("01");
         when(customer1.getCustomerId()).thenReturn("000001");
         when(customer1.getNameCustomer()).thenReturn("CUSTOMER 001");
-        when(customer1.getTypeCustomer()).thenReturn("F");
 
         CustomerModel customer2 = mock(CustomerModel.class);
-        when(customer2.getCompanyCode()).thenReturn("01");
         when(customer2.getCustomerId()).thenReturn("000002");
         when(customer2.getNameCustomer()).thenReturn("CUSTOMER 002");
-        when(customer2.getTypeCustomer()).thenReturn("L");
 
-        List<CustomerModel> customers = Arrays.asList(customer1, customer2);
+        List<CustomerModel> list = List.of(customer1, customer2);
+        Page<CustomerModel> page = new PageImpl<>(list, PageRequest.of(0, 10), list.size());
 
         // Mock
-        when(service.findAll()).thenReturn(customers);
+        when(service.findAll(any(), any())).thenReturn(page);
 
         mockMvc.perform(get("/api/customers")
                                 .accept(MediaType.APPLICATION_JSON))
@@ -103,7 +103,13 @@ class CustomerModelControllerTest {
 
     @Test
     void shouldGetAllNoContent() throws Exception {
-        when(service.findAll()).thenReturn(Collections.emptyList());
+        PageImpl<CustomerModel> emptyPage = new PageImpl<>(
+                Collections.emptyList(),
+                PageRequest.of(0, 10),
+                0
+        );
+
+        when(service.findAll(any(), any())).thenReturn(emptyPage);
 
         mockMvc.perform(get("/api/customers")
                                 .accept(MediaType.APPLICATION_JSON))

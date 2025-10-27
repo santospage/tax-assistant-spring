@@ -194,8 +194,8 @@ The API exposes the following endpoints under the base URL https://localhost:844
 
 ### API Documentation (Swagger)
 
-![Home](assets/home.png)
-![Home](assets/home1.png)
+![Products](assets/home.png)
+![Products1](assets/home1.png)
 
 `/customers`
 
@@ -219,7 +219,7 @@ Customer not found. Returned when no customer exists for the given `company` and
 
 ### API Documentation (Swagger)
 
-![Home](assets/customers.png)
+![Customers](assets/customers.png)
 
 `/fiscal-movements`
 
@@ -262,9 +262,9 @@ Fiscal movement not found. Returned when no fiscal movements exist for the given
 
 ### API Documentation (Swagger)
 
-![Home](assets/movemets.png)
-![Home](assets/movements1.png)
-![Home](assets/movements2.png)
+![Movements](assets/movemets.png)
+![Movements1](assets/movements1.png)
+![Movements2](assets/movements2.png)
 
 `/products`
 
@@ -288,7 +288,7 @@ Product not found. Returned when no product exists for the given `company` and `
 
 ### API Documentation (Swagger)
 
-![Home](assets/products.png)
+![Products](assets/products.png)
 
 `/sales-movements`
 
@@ -356,10 +356,10 @@ Responses:
 
 ### Example Images (Swagger UI)
 
-![Home](assets/sales.png)
-![Home](assets/sales1.png)
-![Home](assets/sales2.png)
-![Home](assets/sales3.png)
+![Sales](assets/sales.png)
+![Sales1](assets/sales1.png)
+![Sales2](assets/sales2.png)
+![Sales3](assets/sales3.png)
 
 `/integrated-movements`
 
@@ -391,8 +391,8 @@ Responses:
 
 ### Example Images (Swagger UI)
 
-![Home](assets/integrated.png)
-![Home](assets/integrated1.png)
+![Integrated](assets/integrated.png)
+![Integrated1](assets/integrated1.png)
 
 `/users`
 
@@ -478,11 +478,11 @@ Responses:
 
 ### Example Images (Swagger UI)
 
-![Home](assets/user.png)
-![Home](assets/user1.png)
-![Home](assets/user2.png)
-![Home](assets/user3.png)
-![Home](assets/user4.png)
+![User](assets/user.png)
+![User1](assets/user1.png)
+![User2](assets/user2.png)
+![User3](assets/user3.png)
+![User4](assets/user4.png)
 
 `/login`
 
@@ -506,7 +506,7 @@ Responses:
 
 ### Example Images (Swagger UI)
 
-![Home](assets/auth.png)
+![Auth](assets/auth.png)
 
 ---
 

@@ -78,7 +78,8 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── FiscalMovementService.java
 │   │                       │       ├── IntegratedMovementService.java
 │   │                       │       ├── SalesMovementService.java
-│   │                       │       └── ProductService.java
+│   │                       │       ├── ProductService.java
+│   │                       │       └── TaxPredictionService.java
 │   │                       ├── domain
 │   │                       │   ├── enums
 │   │                       │   │   ├── UserRole.java
@@ -104,10 +105,12 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── SalesMovementRepository.java
 │   │                       │       └── ProductRepository.java
 │   │                       ├── infrastructure
-│   │                       │   └── security
-│   │                       │       ├── JwtAuthenticationFilter.java
-│   │                       │       ├── JwtTokenProvider.java
-│   │                       │       └── SecurityConfig.java
+│   │                       │   ├── security
+│   │                       │   │   ├── JwtAuthenticationFilter.java
+│   │                       │   │   ├── JwtTokenProvider.java
+│   │                       │   │   └── SecurityConfig.java
+│   │                       │   └── config
+│   │                       │       └── WebClientConfig.java
 │   │                       ├── interfaces
 │   │                       │   ├── controllers
 │   │                       │   │   ├── mongo
@@ -117,7 +120,8 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │   │   ├── FiscalMovementController.java
 │   │                       │   │   ├── IntegratedMovementController.java
 │   │                       │   │   ├── SalesMovementController.java
-│   │                       │   │   └── ProductController.java
+│   │                       │   │   ├── ProductController.java
+│   │                       │   │   └── TaxPredictionController.java
 │   │                       │   └── dto
 │   │                       │       ├── mongo
 │   │                       │       │   └── UserDTO.java
@@ -125,7 +129,9 @@ git clone https://github.com/santospage/tax-assistant-spring.git
 │   │                       │       ├── FiscalMovementDTO.java
 │   │                       │       ├── IntegratedMovementDTO.java
 │   │                       │       ├── SalesMovementDTO.java
-│   │                       │       └── ProductDTO.java
+│   │                       │       ├── ProductDTO.java
+│   │                       │       ├── TaxPredictionDTO.java
+│   │                       │       └── TaxPredictionRequestDTO.java
 │   │                       └── TaxAssistantApplication.java
 ├── test
 │   └── java
@@ -507,6 +513,46 @@ Responses:
 ### Example Images (Swagger UI)
 
 ![Auth](assets/auth.png)
+
+---
+
+### Tax Prediction API
+
+This project exposes a FastAPI service that predicts tax probabilities based on customer and product types. The Spring
+Boot application consumes this API to provide results to the frontend.
+
+Running the FastAPI
+
+Make sure you have Python 3.9+ installed.
+
+Install dependencies:
+
+- pip install -r requirements.txt
+
+Run the FastAPI server:
+
+- uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+The API will be available at: http://localhost:8000
+
+The /predict endpoint expects a POST request with JSON payload:
+
+`/tax-predictions`
+
+- `POST /api/tax-predictions`
+
+Returns taxes.
+
+Responses:
+
+* 200 OK: Returns the movement object.
+* 404 Not Found: Movement not found.
+
+---
+
+### Example Images (Swagger UI)
+
+![Auth](assets/predicts.png)
 
 ---
 
